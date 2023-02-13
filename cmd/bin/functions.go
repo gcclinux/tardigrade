@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -19,10 +20,21 @@ type MyStruct struct {
 	Data string `json:"data"`
 }
 
-func getOS() {
+func getOS() rune {
+
+	PATH_SEPARATOR := '/'
+
 	if runtime.GOOS == "windows" {
-		log.Println("Hello from Windows")
+		PATH_SEPARATOR = '\\'
+	} else if runtime.GOOS == "linux" {
+		PATH_SEPARATOR = '/'
+	} else if runtime.GOOS == "darwin" {
+		PATH_SEPARATOR = '/'
+	} else {
+		log.Println("unknown")
 	}
+
+	return PATH_SEPARATOR
 }
 
 // AddField take in (key, sprint) (data, string) and add to gojsondb.db
@@ -54,16 +66,21 @@ func AddField(key, data string) bool {
 
 // createdDBCopy creates a copy of the Database before RemoveField() runs to campture all error or issues
 func CreatedDBCopy() bool {
+
+	dirname, err := os.UserHomeDir()
+	CheckError("CreatedDBCopy(0)", err)
+	target := "gojsontmp.db"
+
 	src := getFile()
 	fin, err := os.Open(src)
+	CheckError("CreatedDBCopy(1)", err)
 	defer fin.Close()
-	CheckError("CreatedDBCopy(0)", err)
 
-	dst := "gojsontmp.db"
+	dst := fmt.Sprintf("%s%s%s", dirname, string(getOS()), target)
 	buf := make([]byte, 1024)
 	tmp, err := os.Create(dst)
-	defer tmp.Close()
 	CheckError("CreatedDBCopy(2)", err)
+	defer tmp.Close()
 
 buffering:
 	for {
@@ -84,6 +101,7 @@ buffering:
 			return false
 		}
 	}
+	fmt.Println(dst)
 	return true
 }
 
@@ -101,8 +119,7 @@ func SelectByID(id int, f string) string {
 	file, err := os.Open(getFile())
 	CheckError("CountSize(1)", err)
 	defer file.Close()
-	var r io.Reader
-	r = file
+	var r io.Reader = file
 	sc := bufio.NewScanner(r)
 	for sc.Scan() {
 		lastLine++
@@ -143,8 +160,7 @@ func CountSize() int {
 	f, err := os.Open(getFile())
 	CheckError("CountSize(1)", err)
 	defer f.Close()
-	var r io.Reader
-	r = f
+	var r io.Reader = f
 	var count int
 	const lineBreak = '\n'
 	buf := make([]byte, bufio.MaxScanTokenSize)
@@ -185,8 +201,7 @@ func FirstField(f string) string {
 	result := ""
 	CheckError("LastField(1)", err)
 	defer file.Close()
-	var r io.Reader
-	r = file
+	var r io.Reader = file
 	sc := bufio.NewScanner(r)
 
 	for sc.Scan() {
@@ -228,8 +243,7 @@ func LastField(f string) string {
 	result := ""
 	CheckError("LastField(1)", err)
 	defer file.Close()
-	var r io.Reader
-	r = file
+	var r io.Reader = file
 	sc := bufio.NewScanner(r)
 
 	for sc.Scan() {
