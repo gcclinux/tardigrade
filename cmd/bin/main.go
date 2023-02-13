@@ -4,14 +4,10 @@ import "fmt"
 
 func main() {
 
-	AddField("one", "string data test")
-	AddField("two", "string data test II")
-	AddField("three", "string data testIII")
-	AddField("four", "string data test IV")
+	fmt.Println("AddField(): ",
+		AddField("New Entry", "string of data representing a the value"))
 
-	fmt.Println("\nLast Line: ", LastField())
-	fmt.Println("Count Lines: ", CountSize())
+	fmt.Println("SelectByID()", SelectByID(10, "raw"))
 
-	fmt.Println("\n Line 10:", SelectID(10))
-
+	fmt.Println("SelectByID()", SelectByID(10, "value"))
 }

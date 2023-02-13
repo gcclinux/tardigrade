@@ -4,9 +4,9 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"os"
+	"strconv"
 )
 
 // MyStruct contains the structure of the data stored into the gojsondb.db
@@ -17,7 +17,7 @@ type MyStruct struct {
 }
 
 // AddField take in (key, sprint) (data, string) and add to gojsondb.db
-func AddField(key, data string) {
+func AddField(key, data string) bool {
 	id := CountSize() + 1
 	var getStruct = MyStruct{}
 	getStruct.Id = id
@@ -26,36 +26,57 @@ func AddField(key, data string) {
 
 	response, err := json.Marshal(getStruct)
 	CheckError("Marshal", err)
-	fmt.Println(string(response))
 
 	file, err := os.OpenFile(getFile(), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	CheckError("O_APPEND", err)
 	file.Write(response)
 	file.WriteString("\n")
+
+	return true
 }
 
 func RemoveField() {
 
 }
 
-// SelectID return an entry string for a specific id
-func SelectID(id int) string {
+// SelectByID function returns an entry string for a specific id in all formats [ raw | json | id | key | value ]
+func SelectByID(id int, f string) string {
 	lastLine := 0
 	line := ""
-	f, err := os.Open(getFile())
+	result := ""
+	file, err := os.Open(getFile())
 	CheckError("CountSize(1)", err)
-	defer f.Close()
+	defer file.Close()
 	var r io.Reader
-	r = f
+	r = file
 	sc := bufio.NewScanner(r)
 	for sc.Scan() {
 		lastLine++
 		if lastLine == id {
 			line = sc.Text()
-			return line
 		}
 	}
-	return line
+
+	var s MyStruct
+	in := []byte(line)
+	err = json.Unmarshal(in, &s)
+	CheckError("LastField(2)", err)
+
+	if f == "json" {
+		out, _ := json.MarshalIndent(&s, "", "	")
+		result = string(out)
+	} else if f == "value" {
+		result = string(s.Data)
+	} else if f == "raw" {
+		result = line
+	} else if f == "key" {
+		result = string(s.Key)
+	} else if f == "id" {
+		result = strconv.Itoa(s.Id)
+	} else {
+		result = "Invalid format provided!"
+	}
+	return result
 }
 
 func ModifyField() {
@@ -93,32 +114,94 @@ func CountSize() int {
 	return count
 }
 
-func FirstField() {
+// FirstField returns the first entry of gojsondb.db in all formats [ raw | json | id | key | value ] specify format required
+func FirstField(f string) string {
+
+	lastLine := 0
+	line := ""
+	file, err := os.Open(getFile())
+	result := ""
+	CheckError("LastField(1)", err)
+	defer file.Close()
+	var r io.Reader
+	r = file
+	sc := bufio.NewScanner(r)
+
+	for sc.Scan() {
+		lastLine++
+		if lastLine == 1 {
+			line = sc.Text()
+		}
+	}
+
+	var s MyStruct
+	in := []byte(line)
+	err = json.Unmarshal(in, &s)
+	CheckError("LastField(2)", err)
+
+	if f == "json" {
+		out, _ := json.MarshalIndent(&s, "", "	")
+		result = string(out)
+	} else if f == "value" {
+		result = string(s.Data)
+	} else if f == "raw" {
+		result = line
+	} else if f == "key" {
+		result = string(s.Key)
+	} else if f == "id" {
+		result = strconv.Itoa(s.Id)
+	} else {
+		result = "Invalid format provided!"
+	}
+
+	return result
 
 }
 
-// LastField read DB file and return the last entry of gojsondb.db
-func LastField() string {
+// LastField returns the last entry of gojsondb.db in all formats [ raw | json | id | key | value ] specify format required
+func LastField(f string) string {
 	lastLine := 0
 	line := ""
-	f, err := os.Open(getFile())
-	CheckError("CountSize(1)", err)
-	defer f.Close()
+	file, err := os.Open(getFile())
+	result := ""
+	CheckError("LastField(1)", err)
+	defer file.Close()
 	var r io.Reader
-	r = f
+	r = file
 	sc := bufio.NewScanner(r)
+
 	for sc.Scan() {
 		lastLine++
 		if lastLine == CountSize() {
 			line = sc.Text()
-			return line
 		}
 	}
-	return line
+
+	var s MyStruct
+	in := []byte(line)
+	err = json.Unmarshal(in, &s)
+	CheckError("LastField(2)", err)
+
+	if f == "json" {
+		out, _ := json.MarshalIndent(&s, "", "	")
+		result = string(out)
+	} else if f == "value" {
+		result = string(s.Data)
+	} else if f == "raw" {
+		result = line
+	} else if f == "key" {
+		result = string(s.Key)
+	} else if f == "id" {
+		result = strconv.Itoa(s.Id)
+	} else {
+		result = "Invalid format provided!"
+	}
+
+	return result
 }
 
 // EmptyDB - WARNING - this will destroy all data stored in gojsondb.db!
-func EmptyDB() {
+func EmptyDB() bool {
 	jsonFile := getFile()
 
 	delete := os.Remove(jsonFile)
@@ -129,12 +212,13 @@ func EmptyDB() {
 		CheckError("EmptyDB(2)", err)
 		if !fileExists(jsonFile) {
 			CheckError("EmptyDB(3)", err)
-			return
+			return false
 		}
 	}
+	return true
 }
 
-// fileExists function will check if the gojsondb.db exists and return tru / false
+// fileExists function will check if the gojsondb.db exists and return true / false
 func fileExists(filename string) bool {
 	info, err := os.Stat(filename)
 	if os.IsNotExist(err) {
