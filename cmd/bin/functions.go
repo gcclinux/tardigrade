@@ -32,8 +32,8 @@ func AddField(id int, key, data string) {
 	getStruct.Key = key
 	getStruct.Data = data
 
-	response, err := json.MarshalIndent(getStruct, "", "	")
-	CheckError("MarshalIndent", err)
+	response, err := json.Marshal(getStruct)
+	CheckError("Marshal", err)
 	fmt.Println(string(response))
 
 	file, err := os.OpenFile(getFile(), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
@@ -62,7 +62,8 @@ func FirstField() {
 }
 
 func LastField() {
-
+	jsonFile := getFile()
+	readFile(jsonFile)
 }
 
 func EmptyDB() {
@@ -83,4 +84,21 @@ func ReturnDBfFile() *os.File {
 		fmt.Println("ReturnDBfFile()", err)
 	}
 	return file
+}
+
+func readFile(fname string) {
+	file, err := os.Open(fname)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	buf := make([]byte, 62)
+	stat, err := os.Stat(fname)
+	start := stat.Size() - 62
+	_, err = file.ReadAt(buf, start)
+	if err == nil {
+		fmt.Printf("%s\n", buf)
+	}
+
 }
