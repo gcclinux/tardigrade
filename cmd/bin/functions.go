@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -12,21 +15,9 @@ type MyStruct struct {
 	Data string `json:"data"`
 }
 
-func GetJsonDB() {
-
-	jsonFile := getFile()
-	if !fileExists(jsonFile) {
-		fmt.Println("Database does not exist")
-		_, err := os.Create(jsonFile)
-		CheckError("GetJsonDB(1)", err)
-		if !fileExists(jsonFile) {
-			CheckError("GetJsonDB(2)", err)
-			return
-		}
-	}
-}
-
-func AddField(id int, key, data string) {
+// AddField take in (key, sprint) (data, string) and add to gojsondb.db
+func AddField(key, data string) {
+	id := CountSize() + 1
 	var getStruct = MyStruct{}
 	getStruct.Id = id
 	getStruct.Key = key
@@ -39,66 +30,114 @@ func AddField(id int, key, data string) {
 	file, err := os.OpenFile(getFile(), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	CheckError("O_APPEND", err)
 	file.Write(response)
+	file.WriteString("\n")
 }
 
 func RemoveField() {
 
 }
 
-func SelectField() {
-
+// SelectID return an entry string for a specific id
+func SelectID(id int) string {
+	lastLine := 0
+	line := ""
+	f, err := os.Open(getFile())
+	CheckError("CountSize(1)", err)
+	defer f.Close()
+	var r io.Reader
+	r = f
+	sc := bufio.NewScanner(r)
+	for sc.Scan() {
+		lastLine++
+		if lastLine == id {
+			line = sc.Text()
+			return line
+		}
+	}
+	return line
 }
 
 func ModifyField() {
 
 }
 
-func CountSize() {
-
+// CountSize will return number of rows in the gojsondb.db
+func CountSize() int {
+	f, err := os.Open(getFile())
+	CheckError("CountSize(1)", err)
+	defer f.Close()
+	var r io.Reader
+	r = f
+	var count int
+	const lineBreak = '\n'
+	buf := make([]byte, bufio.MaxScanTokenSize)
+	for {
+		bufferSize, err := r.Read(buf)
+		if err != nil && err != io.EOF {
+			return 0
+		}
+		var buffPosition int
+		for {
+			i := bytes.IndexByte(buf[buffPosition:], lineBreak)
+			if i == -1 || bufferSize == buffPosition {
+				break
+			}
+			buffPosition += i + 1
+			count++
+		}
+		if err == io.EOF {
+			break
+		}
+	}
+	return count
 }
 
 func FirstField() {
 
 }
 
-func LastField() {
-	jsonFile := getFile()
-	readFile(jsonFile)
+// LastField read DB file and return the last entry of gojsondb.db
+func LastField() string {
+	lastLine := 0
+	line := ""
+	f, err := os.Open(getFile())
+	CheckError("CountSize(1)", err)
+	defer f.Close()
+	var r io.Reader
+	r = f
+	sc := bufio.NewScanner(r)
+	for sc.Scan() {
+		lastLine++
+		if lastLine == CountSize() {
+			line = sc.Text()
+			return line
+		}
+	}
+	return line
 }
 
+// EmptyDB - WARNING - this will destroy all data stored in gojsondb.db!
 func EmptyDB() {
+	jsonFile := getFile()
 
+	delete := os.Remove(jsonFile)
+	CheckError("EmptyDB(1)", delete)
+
+	if !fileExists(jsonFile) {
+		_, err := os.Create(jsonFile)
+		CheckError("EmptyDB(2)", err)
+		if !fileExists(jsonFile) {
+			CheckError("EmptyDB(3)", err)
+			return
+		}
+	}
 }
 
+// fileExists function will check if the gojsondb.db exists and return tru / false
 func fileExists(filename string) bool {
 	info, err := os.Stat(filename)
 	if os.IsNotExist(err) {
 		return false
 	}
 	return !info.IsDir()
-}
-
-func ReturnDBfFile() *os.File {
-	file, err := os.Open(getFile())
-	if err != nil {
-		fmt.Println("ReturnDBfFile()", err)
-	}
-	return file
-}
-
-func readFile(fname string) {
-	file, err := os.Open(fname)
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-
-	buf := make([]byte, 62)
-	stat, err := os.Stat(fname)
-	start := stat.Size() - 62
-	_, err = file.ReadAt(buf, start)
-	if err == nil {
-		fmt.Printf("%s\n", buf)
-	}
-
 }
