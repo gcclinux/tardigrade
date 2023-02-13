@@ -5,8 +5,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"log"
 	"os"
+	"runtime"
 	"strconv"
+	"time"
 )
 
 // MyStruct contains the structure of the data stored into the gojsondb.db
@@ -16,9 +19,23 @@ type MyStruct struct {
 	Data string `json:"data"`
 }
 
+func getOS() {
+	if runtime.GOOS == "windows" {
+		log.Println("Hello from Windows")
+	}
+}
+
 // AddField take in (key, sprint) (data, string) and add to gojsondb.db
 func AddField(key, data string) bool {
-	id := CountSize() + 1
+
+	if !fileExists(getFile()) {
+		emptyDB()
+		if !fileExists(getFile()) {
+			return false
+		}
+	}
+
+	id := UniqueID() + 1
 	var getStruct = MyStruct{}
 	getStruct.Id = id
 	getStruct.Key = key
@@ -35,8 +52,45 @@ func AddField(key, data string) bool {
 	return true
 }
 
-func RemoveField() {
+// createdDBCopy creates a copy of the Database before RemoveField() runs to campture all error or issues
+func CreatedDBCopy() bool {
+	src := getFile()
+	fin, err := os.Open(src)
+	defer fin.Close()
+	CheckError("CreatedDBCopy(0)", err)
 
+	dst := "gojsontmp.db"
+	buf := make([]byte, 1024)
+	tmp, err := os.Create(dst)
+	defer tmp.Close()
+	CheckError("CreatedDBCopy(2)", err)
+
+buffering:
+	for {
+		n, err := fin.Read(buf)
+		if err != nil && err != io.EOF {
+			CheckError("CreatedDBCopy(3)", err)
+			return false
+		}
+
+		if n == 0 {
+			fin.Close()
+			tmp.Close()
+			break buffering
+		}
+
+		if _, err := tmp.Write(buf[:n]); err != nil {
+			CheckError("CreatedDBCopy(4)", err)
+			return false
+		}
+	}
+	return true
+}
+
+// RemoveField - WARNING: takes a REGEX input and remove add matching string (Can not be undone)
+func RemoveField(text string) bool {
+	//TODO
+	return false
 }
 
 // SelectByID function returns an entry string for a specific id in all formats [ raw | json | id | key | value ]
@@ -79,8 +133,9 @@ func SelectByID(id int, f string) string {
 	return result
 }
 
-func ModifyField() {
-
+func ModifyField() bool {
+	//TODO
+	return false
 }
 
 // CountSize will return number of rows in the gojsondb.db
@@ -112,6 +167,13 @@ func CountSize() int {
 		}
 	}
 	return count
+}
+
+// UniqueID function returns an int for the last used UniqueID to increment in the AddField()
+func UniqueID() int {
+	lastID, err := strconv.Atoi(LastField("id"))
+	CheckError("UniqueID()", err)
+	return lastID
 }
 
 // FirstField returns the first entry of gojsondb.db in all formats [ raw | json | id | key | value ] specify format required
@@ -201,20 +263,23 @@ func LastField(f string) string {
 }
 
 // EmptyDB - WARNING - this will destroy all data stored in gojsondb.db!
-func EmptyDB() bool {
+func emptyDB() bool {
 	jsonFile := getFile()
 
-	delete := os.Remove(jsonFile)
-	CheckError("EmptyDB(1)", delete)
+	if fileExists(jsonFile) {
+		delete := os.Remove(jsonFile)
+		CheckError("emptyDB(1)", delete)
+	}
 
 	if !fileExists(jsonFile) {
 		_, err := os.Create(jsonFile)
-		CheckError("EmptyDB(2)", err)
+		CheckError("emptyDB(2)", err)
 		if !fileExists(jsonFile) {
-			CheckError("EmptyDB(3)", err)
+			CheckError("emptyDB(3)", err)
 			return false
 		}
 	}
+	time.Sleep(2000)
 	return true
 }
 

@@ -4,10 +4,15 @@ import "fmt"
 
 func main() {
 
-	fmt.Println("AddField(): ",
-		AddField("New Entry", "string of data representing a the value"))
+	getOS()
 
-	fmt.Println("SelectByID()", SelectByID(10, "raw"))
+	if AddField("New Entry", "string of data representing a the value") == true {
+		fmt.Println("LastField()", LastField("raw"))
 
-	fmt.Println("SelectByID()", SelectByID(10, "value"))
+		fmt.Println("UniqueID()", UniqueID())
+
+		fmt.Println("CountSize()", CountSize())
+	} else {
+		fmt.Println("AddField() - Faied because could not find Database", nil)
+	}
 }

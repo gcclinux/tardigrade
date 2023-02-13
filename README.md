@@ -3,7 +3,7 @@
 <br>
 
 ## Getting Started
->go get github.com/gcclinux/gojsondb
+>go get wagemaker.no-ip.co.uk:3000/ricardo/gojsondb
 
 <br>
 # HOW-TO-USE
@@ -68,4 +68,7 @@ Last Line JSON  :  {
 
 ```string data test X```
 
+***UniqueID function returns an int for the last used UniqueID***
+> UniqueID()
 
+```54```
