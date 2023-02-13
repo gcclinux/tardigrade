@@ -9,6 +9,7 @@ import (
 	"os"
 )
 
+// MyStruct contains the structure of the data stored into the gojsondb.db
 type MyStruct struct {
 	Id   int    `json:"id"`
 	Key  string `json:"key"`
