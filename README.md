@@ -12,35 +12,54 @@
 
 >AddField("New string Entry", "new value string entry")
 
-```true```
+```
+Result:
+true
+```
 
 ***CountSize() function will return number of rows in the gojsondb.db***
 
 >CountSize()
 
-````44````
+````
+Result:
+44
+````
 
 ***LastField() func returns the last entry in multi-format [ raw | json | id | key | value ]***
 
 >LastField("raw")
 
-```{"id":44,"key":"New Entry","data":"string of data is the value"}```
+```
+Result:
+{"id":44,"key":"New Entry","data":"string of data is the value"}
+```
 
 >LastField("id")
 
-```44```
+```
+Result:
+44
+```
 
 >LastField("key")
 
-```New Entry```
+```
+Result:
+New Entry
+```
 
 >LastField("value")
 
-```string of data is the value```
+```
+Result:
+string of data is the value
+```
 
 >LastField("json")
 
 ```
+Result:
 {
         "id": 44,
         "key": "New Entry",
@@ -51,27 +70,42 @@
 
 >FirstField("raw")
 
-```{"id":1,"key":"one","data":"string data test"}```
+```
+Result:
+{"id":1,"key":"one","data":"string data test"}
+```
 
 ***EmptyDB function - WARNING - this will destroy all data stored in gojsondb.db!***
 
 > EmptyDB() 
 
-```true```
+```
+Result:
+true
+```
 
 ***SelectByID func returns an entry string for a specific id in all formats [ raw | json | id | key | value ]***
 >SelectByID(10, "raw")
 
-```{"id":10,"key":"Roman","data":"string data test X"}```
+```
+Result:
+{"id":10,"key":"Roman","data":"string data test X"}
+```
 
 >SelectByID(10, "value")
 
-```string data test X```
+```
+Result:
+string data test X
+```
 
 ***UniqueID function returns an int for the last used UniqueID***
 > UniqueID()
 
-```54```
+```
+Result:
+54
+```
 
 **LastXFields returns last X number of entries from db in byte[] format**
 > LastXFields(2)
@@ -96,5 +130,25 @@ id: 43, key: New Entry, data: string of data representing a the value
 id: 44, key: New Entry, data: string of data representing a the value
 ```
 
-        
+**FirstXFields returns last X number of entries from db in byte[] format**
+> FirstXFields(2)
 
+```
+Example:
+
+var received = FirstXFields(2)
+
+bytes := received
+var data []MyStruct
+json.Unmarshal(bytes, &data)
+
+for l := range data {
+        fmt.Printf("id: %v, key: %v, data: %s", data[l].Id, data[l].Key, data[1].Data)
+        fmt.Println()
+}
+
+Result:
+
+id: 1, key: New Entry, data: string of data representing a the value
+id: 2, key: New Entry, data: string of data representing a the value
+```

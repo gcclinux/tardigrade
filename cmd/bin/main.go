@@ -7,7 +7,7 @@ import (
 
 func main() {
 
-	var received = LastXFields(2)
+	var received = FirstXFields(2)
 
 	bytes := received
 	var data []MyStruct

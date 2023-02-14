@@ -232,6 +232,49 @@ func UniqueID() int {
 	return lastID
 }
 
+// FirstXFields returns last X number of entries from db in byte[] format
+//
+// Example:
+// specify number of fields to return FirstXFields(2)
+func FirstXFields(count int) []byte {
+
+	var allRecords []MyStruct
+	xFields := new(MyStruct)
+	var tmpStruct MyStruct
+	lastLine := 0
+	start := 1
+	end := count
+	line := ""
+
+	file, err := os.Open(getFile())
+	CheckError("FirstXFields(1)", err)
+
+	defer file.Close()
+	var r io.Reader = file
+	sc := bufio.NewScanner(r)
+
+	for sc.Scan() {
+		lastLine++
+		if lastLine >= start && lastLine <= end {
+			line = sc.Text()
+			in := []byte(line)
+
+			err = json.Unmarshal(in, &tmpStruct)
+			CheckError("FirstXFields(2)", err)
+
+			xFields.Id = tmpStruct.Id
+			xFields.Key = string(tmpStruct.Key)
+			xFields.Data = string(tmpStruct.Data)
+			allRecords = append(allRecords, *xFields)
+		}
+	}
+
+	allRecord, err := json.Marshal(allRecords)
+	CheckError("FirstXFields(3)", err)
+
+	return allRecord
+}
+
 // LastXFields returns last X number of entries from db in byte[] format
 //
 // Example:
