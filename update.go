@@ -8,7 +8,7 @@ import (
 
 // Update takes a key and a value if matches DBFile it stores in the config
 func Update(k, v string) {
-	jsonFile, err := os.Open("db/dbconf.json")
+	jsonFile, err := os.Open("dbconf.json")
 	CheckError("updateconf.go open json --> ", err)
 	defer jsonFile.Close()
 
@@ -32,7 +32,7 @@ func Update(k, v string) {
 
 	jsonArrVal, _ := json.MarshalIndent(myPreJson, "", "    ")
 
-	file, err := os.Create("db/dbconf.json")
+	file, err := os.Create("dbconf.json")
 	CheckError("updateconf.go create json --> ", err)
 	defer file.Close()
 

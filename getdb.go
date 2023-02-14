@@ -10,7 +10,7 @@ type config struct {
 }
 
 func getFile() (dbFile string) {
-	file, err := os.Open("db/dbconf.json")
+	file, err := os.Open("dbconf.json")
 	CheckError("Accessing dbconf.json -->", err)
 	defer file.Close()
 
