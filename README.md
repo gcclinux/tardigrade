@@ -56,7 +56,7 @@ New Entry
 
 ```
 Result:
-string of data is the value
+string of data representing a the value
 ```
 
 >LastField("json")
