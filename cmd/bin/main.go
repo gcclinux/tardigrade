@@ -1,7 +1,17 @@
 package main
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 func main() {
 
-	RemoveField(":9,")
+	var tmpRecords MyStruct
+	out, _ := json.MarshalIndent(tmpRecords, "", "	")
+	result := string(out)
+	fmt.Println(LastXFields(10, "json"))
+	fmt.Println(result)
 
+	// NOT FINISHED
 }

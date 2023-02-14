@@ -225,14 +225,66 @@ func CountSize() int {
 	return count
 }
 
-// UniqueID function returns an int for the last used UniqueID to increment in the AddField()
+// UniqueID function returns an int for the last used UniqueID to AutoIncrement in the AddField()
 func UniqueID() int {
 	lastID, err := strconv.Atoi(LastField("id"))
 	CheckError("UniqueID()", err)
 	return lastID
 }
 
-// FirstField returns the first entry of gojsondb.db in all formats [ raw | json | id | key | value ] specify format required
+// LastXFields returns last X number of entries in gojsondb.db in all formats [ raw | json | id | key | value ]
+// specify format and number of fileds to return LastXFields(10,"raw")
+func LastXFields(count int, f string) []MyStruct {
+
+	var tmpRecords MyStruct
+	var allRecords []MyStruct
+	lastLine := 0
+	start := CountSize() - count
+	end := CountSize()
+	line := ""
+	file, err := os.Open(getFile())
+	CheckError("LastXFields(1)", err)
+	defer file.Close()
+	var r io.Reader = file
+	sc := bufio.NewScanner(r)
+
+	for sc.Scan() {
+		lastLine++
+
+		if lastLine >= start && lastLine <= end {
+			line = sc.Text()
+			in := []byte(line)
+			err = json.Unmarshal(in, &tmpRecords)
+			CheckError("LastXFields(2)", err)
+
+			if f == "json" {
+				allRecords = append(allRecords, tmpRecords)
+			}
+			// else if f == "value" {
+			// 	result = string(tmpRecords.Data)
+			// 	fmt.Println(result)
+			// } else if f == "raw" {
+			// 	result = line
+			// 	fmt.Println(result)
+			// } else if f == "key" {
+			// 	result = string(tmpRecords.Key)
+			// 	fmt.Println(result)
+			// } else if f == "id" {
+			// 	result = strconv.Itoa(tmpRecords.Id)
+			// 	fmt.Println(result)
+			// } else {
+			// 	result = "Invalid format provided!"
+			// 	fmt.Println(result)
+			// }
+		}
+	}
+
+	return allRecords
+
+}
+
+// FirstField returns the first entry of gojsondb.db in all formats [ raw | json | id | key | value ]
+// specify format required FirstField("json")
 func FirstField(f string) string {
 
 	lastLine := 0
