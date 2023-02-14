@@ -10,7 +10,7 @@
 
 ***AddField() function take in ((key)string, (Value) string) and add to database.***
 
->AddField("New string Entry", "new value string entry")
+>AddField("New string Entry", "string of data representing a the value")
 
 ```
 Result:
@@ -32,7 +32,7 @@ Result:
 
 ```
 Result:
-{"id":44,"key":"New Entry","data":"string of data is the value"}
+{"id":44,"key":"New Entry","data":"string of data representing a the value"}
 ```
 
 >LastField("id")
@@ -89,7 +89,7 @@ true
 
 ```
 Result:
-{"id":10,"key":"Roman","data":"string data test X"}
+{"id":10,"key":"Roman","data":"string of data representing a the value of X"}
 ```
 
 >SelectByID(10, "value")
