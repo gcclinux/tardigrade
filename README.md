@@ -41,7 +41,7 @@
 >LastField("json")
 
 ```
-Last Line JSON  :  {
+{
         "id": 44,
         "key": "New Entry",
         "data": "string of data representing a the value"
@@ -72,3 +72,29 @@ Last Line JSON  :  {
 > UniqueID()
 
 ```54```
+
+**LastXFields returns last X number of entries from db in byte[] format**
+> LastXFields(2)
+
+```
+Example:
+
+var received = LastXFields(2)
+
+bytes := received
+var data []MyStruct
+json.Unmarshal(bytes, &data)
+
+for l := range data {
+        fmt.Printf("id: %v, key: %v, data: %s", data[l].Id, data[l].Key, data[1].Data)
+        fmt.Println()
+}
+
+Result:
+
+id: 43, key: New Entry, data: string of data representing a the value
+id: 44, key: New Entry, data: string of data representing a the value
+```
+
+        
+

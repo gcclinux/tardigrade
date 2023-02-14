@@ -1,17 +1,20 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 )
 
 func main() {
 
-	//var tmpRecords MyStruct
-	// out, _ := json.MarshalIndent(tmpRecords, "", "	")
-	// result := string(out)
+	var received = LastXFields(2)
 
-	var receivedRecords = LastXFields(10)
-	fmt.Println(receivedRecords)
+	bytes := received
+	var data []MyStruct
+	json.Unmarshal(bytes, &data)
 
-	// NOT FINISHED
+	for l := range data {
+		fmt.Printf("id: %v, key: %v, data: %s", data[l].Id, data[l].Key, data[1].Data)
+		fmt.Println()
+	}
 }

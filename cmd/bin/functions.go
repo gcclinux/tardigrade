@@ -232,37 +232,48 @@ func UniqueID() int {
 	return lastID
 }
 
-// LastXFields returns last X number of entries from gojsondb.db in json[] format.
-// specify format and number of fileds to return LastXFields(10)
-func LastXFields(count int) []MyStruct {
+// LastXFields returns last X number of entries from db in byte[] format
+//
+// Example:
+// specify number of fields to return LastXFields(2)
+func LastXFields(count int) []byte {
 
-	var tmpRecords MyStruct
 	var allRecords []MyStruct
+	count = count - 1
+	xFields := new(MyStruct)
+	var tmpStruct MyStruct
 	lastLine := 0
 	start := CountSize() - count
 	end := CountSize()
 	line := ""
+
 	file, err := os.Open(getFile())
 	CheckError("LastXFields(1)", err)
+
 	defer file.Close()
 	var r io.Reader = file
 	sc := bufio.NewScanner(r)
 
 	for sc.Scan() {
 		lastLine++
-
 		if lastLine >= start && lastLine <= end {
 			line = sc.Text()
 			in := []byte(line)
-			err = json.Unmarshal(in, &tmpRecords)
+
+			err = json.Unmarshal(in, &tmpStruct)
 			CheckError("LastXFields(2)", err)
 
-			allRecords = append(allRecords, tmpRecords)
+			xFields.Id = tmpStruct.Id
+			xFields.Key = string(tmpStruct.Key)
+			xFields.Data = string(tmpStruct.Data)
+			allRecords = append(allRecords, *xFields)
 		}
 	}
 
-	return allRecords
+	allRecord, err := json.Marshal(allRecords)
+	CheckError("LastXFields(3)", err)
 
+	return allRecord
 }
 
 // FirstField returns the first entry of gojsondb.db in all formats [ raw | json | id | key | value ]
