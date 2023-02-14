@@ -232,9 +232,9 @@ func UniqueID() int {
 	return lastID
 }
 
-// LastXFields returns last X number of entries in gojsondb.db in all formats [ raw | json | id | key | value ]
-// specify format and number of fileds to return LastXFields(10,"raw")
-func LastXFields(count int, f string) []MyStruct {
+// LastXFields returns last X number of entries from gojsondb.db in json[] format.
+// specify format and number of fileds to return LastXFields(10)
+func LastXFields(count int) []MyStruct {
 
 	var tmpRecords MyStruct
 	var allRecords []MyStruct
@@ -257,25 +257,7 @@ func LastXFields(count int, f string) []MyStruct {
 			err = json.Unmarshal(in, &tmpRecords)
 			CheckError("LastXFields(2)", err)
 
-			if f == "json" {
-				allRecords = append(allRecords, tmpRecords)
-			}
-			// else if f == "value" {
-			// 	result = string(tmpRecords.Data)
-			// 	fmt.Println(result)
-			// } else if f == "raw" {
-			// 	result = line
-			// 	fmt.Println(result)
-			// } else if f == "key" {
-			// 	result = string(tmpRecords.Key)
-			// 	fmt.Println(result)
-			// } else if f == "id" {
-			// 	result = strconv.Itoa(tmpRecords.Id)
-			// 	fmt.Println(result)
-			// } else {
-			// 	result = "Invalid format provided!"
-			// 	fmt.Println(result)
-			// }
+			allRecords = append(allRecords, tmpRecords)
 		}
 	}
 
