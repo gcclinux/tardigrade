@@ -16,8 +16,8 @@
 >AddField("New string Entry", "string of data representing a the value")
 
 ```
-Result:
-true
+Return:
+true | false
 ```
 
 ***CountSize() function will return number of rows in the gojsondb.db***
@@ -83,8 +83,8 @@ Result:
 > EmptyDB() 
 
 ```
-Result:
-true
+Return:
+true | false
 ```
 
 ***SelectByID func returns an entry string for a specific id in all formats [ raw | json | id | key | value ]***
@@ -99,7 +99,7 @@ Result:
 
 ```
 Result:
-string data test X
+string of data representing a the value of X
 ```
 
 ***UniqueID function returns an int for the last used UniqueID***
@@ -155,3 +155,34 @@ Result:
 id: 1, key: New Entry, data: string of data representing a the value
 id: 2, key: New Entry, data: string of data representing a the value
 ```
+**CreatedDBCopy creates a copy of the Database and store in UserHomeDir()**
+> CreatedDBCopy()
+
+```
+Return:
+PATH: /Users/ricardowagemaker/gojsontmp.db
+true | false
+```
+
+**CreateDB - WARNING - this will destroy all data is Database already exist**
+>CreateDB()
+```
+Return:
+true | false
+```
+
+# STILL TO DO
+
+```
+NEW
+* RemoveField - WARNING: takes an id as an input and remove add matching the unique id
+* ModifyField - Takes ID, Key, Value (all 3 fields) and update with information provided in k & V
+
+CHECK
+** Write some code tests
+** Review functions code on empty database reaction
+** Review functions code on number of rows less than available in database
+```
+
+
+

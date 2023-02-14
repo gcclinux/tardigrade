@@ -10,7 +10,6 @@ import (
 	"os"
 	"runtime"
 	"strconv"
-	"time"
 )
 
 // MyStruct contains the structure of the data stored into the gojsondb.db
@@ -41,7 +40,7 @@ func getOS() rune {
 func AddField(key, data string) bool {
 
 	if !fileExists(getFile()) {
-		emptyDB()
+		CreateDB()
 		if !fileExists(getFile()) {
 			return false
 		}
@@ -64,7 +63,7 @@ func AddField(key, data string) bool {
 	return true
 }
 
-// createdDBCopy creates a copy of the Database before RemoveField() runs to campture all error or issues
+// CreatedDBCopy creates a copy of the Database and store in UserHomeDir()
 func CreatedDBCopy() bool {
 
 	dirname, err := os.UserHomeDir()
@@ -105,7 +104,7 @@ buffering:
 	return true
 }
 
-// RemoveField - WARNING: takes a REGEX input and remove add matching string (Can not be undone)
+// RemoveField - WARNING: takes an id as an input and remove add matching string (Can not be undone)
 func RemoveField(id int) bool {
 
 	fmt.Println("Check ID:", id)
@@ -164,7 +163,8 @@ func SelectByID(id int, f string) string {
 	return result
 }
 
-func ModifyField() bool {
+// ModifyField takes ID, Key, Value (all 3 fields) and update with information provided in k & V
+func ModifyField(id int, k, v string) bool {
 	//TODO
 	return false
 }
@@ -378,24 +378,23 @@ func LastField(f string) string {
 	return result
 }
 
-// EmptyDB - WARNING - this will destroy all data stored in gojsondb.db!
-func emptyDB() bool {
+// CreateDB - WARNING - this will destroy all data is Database already exist
+func CreateDB() bool {
 	jsonFile := getFile()
 
 	if fileExists(jsonFile) {
 		delete := os.Remove(jsonFile)
-		CheckError("emptyDB(1)", delete)
+		CheckError("CreateDB(1)", delete)
 	}
 
 	if !fileExists(jsonFile) {
 		_, err := os.Create(jsonFile)
-		CheckError("emptyDB(2)", err)
+		CheckError("CreateDB(2)", err)
 		if !fileExists(jsonFile) {
-			CheckError("emptyDB(3)", err)
+			CheckError("CreateDB(3)", err)
 			return false
 		}
 	}
-	time.Sleep(2000)
 	return true
 }
 
