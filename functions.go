@@ -101,14 +101,14 @@ buffering:
 			return false
 		}
 	}
-	fmt.Println(dst)
+	fmt.Println("PATH: ", dst)
 	return true
 }
 
 // RemoveField - WARNING: takes a REGEX input and remove add matching string (Can not be undone)
-func RemoveField(text string) bool {
+func RemoveField(id int) bool {
 
-	fmt.Println("Check String:", text)
+	fmt.Println("Check ID:", id)
 
 	CreatedDBCopy()
 	dirname, err := os.UserHomeDir()
@@ -120,33 +120,7 @@ func RemoveField(text string) bool {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer f.Close()
-
-	var bs []byte
-	buf := bytes.NewBuffer(bs)
-
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		if scanner.Text() != ":9," {
-			fmt.Println("Not match:", scanner.Text())
-			_, err := buf.Write(scanner.Bytes())
-			if err != nil {
-				log.Fatal(err)
-			}
-			_, err = buf.WriteString("\n")
-			if err != nil {
-				log.Fatal(err)
-			}
-		}
-	}
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-	}
-
-	err = os.WriteFile(fpath, buf.Bytes(), 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
+	f.Close()
 
 	return false
 }

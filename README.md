@@ -5,8 +5,11 @@
 ## Getting Started
 >go get wagemaker.no-ip.co.uk:3000/ricardo/gojsondb
 
-<br>
+<BR>
+
 # HOW-TO-USE
+
+<BR>
 
 ***AddField() function take in ((key)string, (Value) string) and add to database.***
 
