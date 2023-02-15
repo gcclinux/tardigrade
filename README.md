@@ -1,7 +1,7 @@
 
-## "gojsondb" is small and simple noSQL JSON database for small apps and easy use.
-###### *Updated: Wed Feb 15 16:25:45 GMT 2023*
-###### *release: 0.0.1*
+## "tardigrade" is small and simple noSQL database for small apps and easy use.
+*Updated: Wed Feb 15 16:25:45 GMT 2023*<br>
+*release: 0.0.1*
 <br>
 
 ## Getting Started
