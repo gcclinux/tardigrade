@@ -5,7 +5,7 @@
 <br>
 
 ## Getting Started
->>go get [https://github.com/gcclinux/tardigrade](https://github.com/gcclinux/tardigrade)
+>go get [https://github.com/gcclinux/tardigrade](https://github.com/gcclinux/tardigrade)
 
 <BR>
 
