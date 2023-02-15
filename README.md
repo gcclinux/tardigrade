@@ -65,6 +65,9 @@ Result:
 >function: LastField("raw")
 
 ```
+Example: 
+fmt.Println(LastField("raw"))
+
 Result:
 {"id":44,"key":"New Entry","data":"string of data representing a the value"}
 ```
@@ -72,6 +75,9 @@ Result:
 >function: LastField("id")
 
 ```
+Example: 
+fmt.Println(LastField("id"))
+
 Result:
 44
 ```
@@ -79,6 +85,9 @@ Result:
 >function: LastField("key")
 
 ```
+Example: 
+fmt.Println(LastField("key"))
+
 Result:
 New Entry
 ```
@@ -86,6 +95,9 @@ New Entry
 >function: LastField("value")
 
 ```
+Example: 
+fmt.Println(LastField("value"))
+
 Result:
 string of data representing a the value
 ```
@@ -93,6 +105,9 @@ string of data representing a the value
 >function: LastField("json")
 
 ```
+Example: 
+fmt.Println(LastField("json"))
+
 Result:
 {
         "id": 44,
@@ -105,6 +120,9 @@ Result:
 >function: FirstField("raw")
 
 ```
+Example: 
+fmt.Println(FirstField("raw"))
+
 Result:
 {"id":1,"key":"one","data":"string data test"}
 ```
@@ -113,6 +131,10 @@ Result:
 >function: SelectByID(10, "raw")
 
 ```
+Example: 
+
+fmt.Println(SelectByID(10, "raw"))
+
 Result:
 {"id":10,"key":"Roman","data":"string of data representing a the value of X"}
 ```
@@ -128,6 +150,9 @@ string of data representing a the value of X
 >function: UniqueID()
 
 ```
+Example: 
+fmt.Println(UniqueID())
+
 Result:
 54
 ```
@@ -137,7 +162,6 @@ Result:
 
 ```
 Example:
-
 var received = LastXFields(2)
 
 bytes := received
@@ -160,7 +184,6 @@ id: 44, key: New Entry, data: string of data representing a the value
 
 ```
 Example:
-
 var received = FirstXFields(2)
 
 bytes := received
@@ -183,7 +206,6 @@ id: 2, key: New Entry, data: string of data representing a the value
 
 ```
 Example:
-
 // Delete the field Id 2 (this can not be undone)
 fmt.Println("Return: ", RemoveField(2))
 fmt.Println()
@@ -211,10 +233,10 @@ id: 3, key: New Entry, data: string of data representing a the value
 # STILL TO DO
 
 ```
-NEW
+WP
 * ModifyField - Takes an id, Key & Value (all 3 fields) and update with information provided for key & value
 
-CHECK
+ADDITIONAL WORK
 ** Write some test functions
 ** Review functions code on empty database reaction
 ** Review functions code on number of rows less than available in database

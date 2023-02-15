@@ -106,7 +106,7 @@ func SelectByID(id int, f string) string {
 	line := ""
 	result := ""
 	file, err := os.Open(getFile())
-	CheckError("CountSize(1)", err)
+	CheckError("SelectByID(1)", err)
 	defer file.Close()
 	var r io.Reader = file
 	sc := bufio.NewScanner(r)
@@ -141,7 +141,9 @@ func SelectByID(id int, f string) string {
 
 // ModifyField takes ID, Key, Value (all 3 fields) and update with information provided in k & V
 func ModifyField(id int, k, v string) bool {
-	//TODO
+
+	//line := SelectByID(id, "raw")
+
 	return false
 }
 

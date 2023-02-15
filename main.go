@@ -1,24 +1,18 @@
 package main
 
-import (
-	"encoding/json"
-	"fmt"
-)
+import "fmt"
 
 // This main function is only used for testing it will be deleted from the final version as this becomes a module.
 
 func main() {
-	// Delete the field id 2 row
-	fmt.Println("Return: ", RemoveField(2))
 
-	// Check results print last 3 rows
-	var received = FirstXFields(2)
-	bytes := received
-	var data []MyStruct
-	json.Unmarshal(bytes, &data)
+	// Check current information in ROW 2 BEFORE CHANGE
+	fmt.Println(SelectByID(2, "raw"))
 
-	for l := range data {
-		fmt.Printf("id: %v, key: %v, data: %s", data[l].Id, data[l].Key, data[1].Data)
-		fmt.Println()
-	}
+	// Modify ROW 2 with new information provided in key & value
+	var change = ModifyField(2, "Updated key", "Updated data set with new inforation")
+	fmt.Println("Changed: ", change)
+
+	// Check current information in ROW 2 AFTER CHANGE
+	fmt.Println(SelectByID(2, "raw"))
 }
