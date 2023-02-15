@@ -11,6 +11,7 @@ type config struct {
 	Updated string
 }
 
+// getFile fucntion returns the database path
 func getFile() (dbFile string) {
 	file, err := os.Open("dbconf.json")
 	CheckError("Accessing dbconf.json -->", err)
@@ -26,6 +27,7 @@ func getFile() (dbFile string) {
 	return dbFile
 }
 
+// GetVersion function returns the current release version
 func GetVersion() (release string) {
 	file, err := os.Open("dbconf.json")
 	CheckError("Accessing dbconf.json -->", err)
@@ -41,6 +43,7 @@ func GetVersion() (release string) {
 	return release
 }
 
+// GetUpdated function returns the last updated time
 func GetUpdated() (updated string) {
 	file, err := os.Open("dbconf.json")
 	CheckError("Accessing dbconf.json -->", err)

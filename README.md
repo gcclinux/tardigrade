@@ -1,7 +1,8 @@
 
 ## "tardigrade" is small and simple noSQL database for small apps and easy use.
-*Updated: Wed Feb 15 16:25:45 GMT 2023*<br>
-*release: 0.0.1*
+*updated:  Wed 15 Feb 21:52:17 GMT 2023*<br>
+*release:  0.0.2*
+
 <br>
 
 ## Getting Started
@@ -270,14 +271,15 @@ Changed:  true
 {"id":2,"key":"Updated key","data":"Updated data set with new inforation"}
 ```
 
-# STILL TO DO
-
-```
 RELEASE NOTE:
 
-** Initial version 0.0.2
+```
+** release 0.0.1 - Initial version
+** release 0.0.2 - Cleanup comments and unused files
+```
 
 OUTSTANDING
+```
 ** Write some test functions
 ```
 
