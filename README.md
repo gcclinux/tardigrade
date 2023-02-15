@@ -155,19 +155,26 @@ Result:
 id: 1, key: New Entry, data: string of data representing a the value
 id: 2, key: New Entry, data: string of data representing a the value
 ```
+
+**CreateDB - This function will create a database file if it does not exist and return true | false**
+>CreateDB()
+```
+Return:
+true | false
+```
+
+**DeleteDB - WARNING - this function delete the database file return true | false**
+>DeleteDB()
+```
+Return:
+true | false
+```
 **CreatedDBCopy creates a copy of the Database and store in UserHomeDir()**
 > CreatedDBCopy()
 
 ```
 Return:
 PATH: /Users/ricardowagemaker/gojsontmp.db
-true | false
-```
-
-**CreateDB - WARNING - this will destroy all data is Database already exist**
->CreateDB()
-```
-Return:
 true | false
 ```
 
