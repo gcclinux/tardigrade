@@ -30,12 +30,20 @@ true | false
 >function: CreatedDBCopy()
 
 ```
-Return:
-PATH: /Users/ricardowagemaker/gojsontmp.db
-true | false
+Example:
+
+msg, status := CreatedDBCopy()
+fmt.Println("CreatedDBCopy: ", msg, status)
+
+Return: true
+CreatedDBCopy:  /home/ricardowagemaker/tardigradecopy.db true
+
+Return: false
+CreatedDBCopy:  Database tardigrade.db missing! false
+
 ```
 
-***EmptyDB function - WARNING - this will destroy the database and all data stored in it!***
+**EmptyDB function - WARNING - this will destroy the database and all data stored in it!**
 
 >function: EmptyDB() 
 
@@ -44,7 +52,7 @@ Return:
 true | false
 ```
 
-***AddField() function take in ((key)string, (Value) string) and add to database.***
+**AddField() function take in ((key)string, (Value) string) and add to database.**
 
 >function: AddField("New string Entry", "string of data representing a the value")
 
@@ -53,7 +61,7 @@ Return:
 true | false
 ```
 
-***CountSize() function will return number of rows in the gojsondb.db***
+**CountSize() function will return number of rows in the gojsondb.db**
 
 >function: CountSize()
 
@@ -62,7 +70,7 @@ Result:
 44
 ````
 
-***LastField() func returns the last entry in multi-format \[ raw | json | id | key | value ]***
+**LastField() func returns the last entry in multi-format \[ raw | json | id | key | value ]**
 
 >function: LastField("raw")
 
@@ -117,7 +125,7 @@ Result:
         "data": "string of data representing a the value"
 }
 ```
-***FirstField func returns the first entry of gojsondb.db in all formats \[ raw | json | id | key | value ] specify format required***
+**FirstField func returns the first entry of gojsondb.db in all formats \[ raw | json | id | key | value ] specify format required**
 
 >function: FirstField("raw")
 
@@ -129,7 +137,7 @@ Result:
 {"id":1,"key":"one","data":"string data test"}
 ```
 
-***SelectByID func returns an entry string for a specific id in all formats \[ raw | json | id | key | value ]***
+**SelectByID func returns an entry string for a specific id in all formats \[ raw | json | id | key | value ]**
 >function: SelectByID(10, "raw")
 
 ```
@@ -148,7 +156,7 @@ Result:
 string of data representing a the value of X
 ```
 
-***UniqueID function returns an int for the last used UniqueID***
+**UniqueID function returns an int for the last used UniqueID**
 >function: UniqueID()
 
 ```
@@ -209,7 +217,8 @@ id: 2, key: New Entry, data: string of data representing a the value
 ```
 Example:
 // Delete the field Id 2 (this can not be undone)
-fmt.Println("Return: ", RemoveField(2))
+msg, status := RemoveField(2)
+fmt.Println(msg, status)
 fmt.Println()
 
 // Check results by printing the first 2 rows in database
@@ -229,6 +238,13 @@ Return:  true
 
 id: 1, key: New Entry, data: string of data representing a the value
 id: 3, key: New Entry, data: string of data representing a the value
+
+Return:  false
+
+Record 2 is empty! false
+id: 1, key: New string Entry, data: string of data representing a the value
+id: 3, key: New string Entry, data: string of data representing a the value
+
 
 ```
 
@@ -259,12 +275,10 @@ Changed:  true
 ```
 RELEASE NOTE:
 
-** Initial version 0.0.1
+** Initial version 0.0.2
 
 OUTSTANDING
 ** Write some test functions
-** Review functions code for empty database and returns
-** Review functions code if number of rows is less than query in database
 ```
 
 

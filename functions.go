@@ -65,78 +65,106 @@ func AddField(key, data string) bool {
 }
 
 // RemoveField function takes an unique field id as an input and remove the matching field entry
-func RemoveField(id int) bool {
+func RemoveField(id int) (string, bool) {
 
-	line := SelectByID(id, "raw")
+	status := true
+	msg := ""
 
-	//CreatedDBCopy()
-	// dirname, err := os.UserHomeDir()
-	// CheckError("RemoveField(0)", err)
-	// src := "gojsontmp.db"
-	// fpath := fmt.Sprintf("%s%s%s", dirname, string(getOS()), src)
+	src := getFile()
+	if !fileExists(src) {
+		return (fmt.Sprintf("Database %s missing!", src)), false
+	} else {
+		fInfo, _ := os.Stat(src)
+		fsize := fInfo.Size()
+		if fsize == 0 {
+			return (fmt.Sprintf("Database %s is empty!", src)), false
+		} else {
+			line := SelectByID(id, "raw")
 
-	fpath := getFile()
-	f, err := os.Open(fpath)
-	CheckError("RemoveField(1)", err)
+			if strings.Contains(line, "Record") && strings.Contains(line, "empty") {
+				status = false
+				msg = line
+			} else {
+				msg = line
+				fpath := getFile()
+				f, err := os.Open(fpath)
+				CheckError("RemoveField(1)", err)
 
-	var bs []byte
-	buf := bytes.NewBuffer(bs)
+				var bs []byte
+				buf := bytes.NewBuffer(bs)
 
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		if scanner.Text() != line {
-			_, err := buf.Write(scanner.Bytes())
-			CheckError("RemoveField(2)", err)
-			_, err = buf.WriteString("\n")
-			CheckError("RemoveField(3)", err)
+				scanner := bufio.NewScanner(f)
+				for scanner.Scan() {
+					if scanner.Text() != line {
+						_, err := buf.Write(scanner.Bytes())
+						CheckError("RemoveField(2)", err)
+						_, err = buf.WriteString("\n")
+						CheckError("RemoveField(3)", err)
+					}
+				}
+				if err := scanner.Err(); err != nil {
+					CheckError("RemoveField(4)", err)
+				}
+
+				err = os.WriteFile(fpath, buf.Bytes(), 0666)
+				CheckError("RemoveField(5)", err)
+				f.Close()
+			}
 		}
 	}
-	if err := scanner.Err(); err != nil {
-		CheckError("RemoveField(4)", err)
-	}
-
-	err = os.WriteFile(fpath, buf.Bytes(), 0666)
-	CheckError("RemoveField(5)", err)
-	f.Close()
-
-	return true
+	return msg, status
 }
 
 // SelectByID function returns an entry string for a specific id in all formats [ raw | json | id | key | value ]
 func SelectByID(id int, f string) string {
-	lastLine := 0
-	line := ""
+
+	regx := fmt.Sprintf("\"id\":%v,", id)
+
 	result := ""
-	file, err := os.Open(getFile())
-	CheckError("SelectByID(1)", err)
-	defer file.Close()
-	var r io.Reader = file
-	sc := bufio.NewScanner(r)
-	for sc.Scan() {
-		lastLine++
-		if lastLine == id {
-			line = sc.Text()
-		}
-	}
-
-	var s MyStruct
-	in := []byte(line)
-	err = json.Unmarshal(in, &s)
-	CheckError("LastField(2)", err)
-
-	if f == "json" {
-		out, _ := json.MarshalIndent(&s, "", "	")
-		result = string(out)
-	} else if f == "value" {
-		result = string(s.Data)
-	} else if f == "raw" {
-		result = line
-	} else if f == "key" {
-		result = string(s.Key)
-	} else if f == "id" {
-		result = strconv.Itoa(s.Id)
+	src := getFile()
+	if !fileExists(src) {
+		return (fmt.Sprintf("Database %s missing!", src))
 	} else {
-		result = "Invalid format provided!"
+		fInfo, _ := os.Stat(src)
+		fsize := fInfo.Size()
+		if fsize == 0 {
+			return (fmt.Sprintf("Database %s is empty!", src))
+		} else {
+			line := ""
+			file, err := os.Open(getFile())
+			CheckError("SelectByID(1)", err)
+			defer file.Close()
+			var r io.Reader = file
+			sc := bufio.NewScanner(r)
+			for sc.Scan() {
+				if strings.Contains(sc.Text(), regx) {
+					line = sc.Text()
+				}
+			}
+			if len(line) == 0 {
+				return (fmt.Sprintf("Record %v is empty!", id))
+			} else {
+				var s MyStruct
+				in := []byte(line)
+				err = json.Unmarshal(in, &s)
+				CheckError("SelectByID(2)", err)
+
+				if f == "json" {
+					out, _ := json.MarshalIndent(&s, "", "	")
+					result = string(out)
+				} else if f == "value" {
+					result = string(s.Data)
+				} else if f == "raw" {
+					result = line
+				} else if f == "key" {
+					result = string(s.Key)
+				} else if f == "id" {
+					result = strconv.Itoa(s.Id)
+				} else {
+					result = "Invalid format provided!"
+				}
+			}
+		}
 	}
 	return result
 }
@@ -219,40 +247,51 @@ func UniqueID() int {
 // specify number of fields to return FirstXFields(2)
 func FirstXFields(count int) []byte {
 
-	var allRecords []MyStruct
-	xFields := new(MyStruct)
-	var tmpStruct MyStruct
-	lastLine := 0
-	start := 1
-	end := count
-	line := ""
+	var allRecord []byte
 
-	file, err := os.Open(getFile())
-	CheckError("FirstXFields(1)", err)
+	src := getFile()
+	if !fileExists(src) {
+		return []byte(fmt.Sprintf("Database %s missing!", src))
+	} else {
+		fInfo, _ := os.Stat(src)
+		fsize := fInfo.Size()
+		if fsize == 0 {
+			return []byte(fmt.Sprintf("Database %s is empty!", src))
+		} else {
+			var allRecords []MyStruct
+			xFields := new(MyStruct)
+			var tmpStruct MyStruct
+			lastLine := 0
+			start := 1
+			end := count
+			line := ""
 
-	defer file.Close()
-	var r io.Reader = file
-	sc := bufio.NewScanner(r)
+			file, err := os.Open(getFile())
+			CheckError("FirstXFields(1)", err)
 
-	for sc.Scan() {
-		lastLine++
-		if lastLine >= start && lastLine <= end {
-			line = sc.Text()
-			in := []byte(line)
+			defer file.Close()
+			var r io.Reader = file
+			sc := bufio.NewScanner(r)
 
-			err = json.Unmarshal(in, &tmpStruct)
-			CheckError("FirstXFields(2)", err)
+			for sc.Scan() {
+				lastLine++
+				if lastLine >= start && lastLine <= end {
+					line = sc.Text()
+					in := []byte(line)
 
-			xFields.Id = tmpStruct.Id
-			xFields.Key = string(tmpStruct.Key)
-			xFields.Data = string(tmpStruct.Data)
-			allRecords = append(allRecords, *xFields)
+					err = json.Unmarshal(in, &tmpStruct)
+					CheckError("FirstXFields(2)", err)
+
+					xFields.Id = tmpStruct.Id
+					xFields.Key = string(tmpStruct.Key)
+					xFields.Data = string(tmpStruct.Data)
+					allRecords = append(allRecords, *xFields)
+				}
+			}
+			allRecord, err = json.Marshal(allRecords)
+			CheckError("FirstXFields(3)", err)
 		}
 	}
-
-	allRecord, err := json.Marshal(allRecords)
-	CheckError("FirstXFields(3)", err)
-
 	return allRecord
 }
 
@@ -262,41 +301,52 @@ func FirstXFields(count int) []byte {
 // specify number of fields to return LastXFields(2)
 func LastXFields(count int) []byte {
 
-	var allRecords []MyStruct
-	count = count - 1
-	xFields := new(MyStruct)
-	var tmpStruct MyStruct
-	lastLine := 0
-	start := CountSize() - count
-	end := CountSize()
-	line := ""
+	var allRecord []byte
 
-	file, err := os.Open(getFile())
-	CheckError("LastXFields(1)", err)
+	src := getFile()
+	if !fileExists(src) {
+		return []byte(fmt.Sprintf("Database %s missing!", src))
+	} else {
+		fInfo, _ := os.Stat(src)
+		fsize := fInfo.Size()
+		if fsize == 0 {
+			return []byte(fmt.Sprintf("Database %s is empty!", src))
+		} else {
+			var allRecords []MyStruct
+			count = count - 1
+			xFields := new(MyStruct)
+			var tmpStruct MyStruct
+			lastLine := 0
+			start := CountSize() - count
+			end := CountSize()
+			line := ""
 
-	defer file.Close()
-	var r io.Reader = file
-	sc := bufio.NewScanner(r)
+			file, err := os.Open(getFile())
+			CheckError("LastXFields(1)", err)
 
-	for sc.Scan() {
-		lastLine++
-		if lastLine >= start && lastLine <= end {
-			line = sc.Text()
-			in := []byte(line)
+			defer file.Close()
+			var r io.Reader = file
+			sc := bufio.NewScanner(r)
 
-			err = json.Unmarshal(in, &tmpStruct)
-			CheckError("LastXFields(2)", err)
+			for sc.Scan() {
+				lastLine++
+				if lastLine >= start && lastLine <= end {
+					line = sc.Text()
+					in := []byte(line)
 
-			xFields.Id = tmpStruct.Id
-			xFields.Key = string(tmpStruct.Key)
-			xFields.Data = string(tmpStruct.Data)
-			allRecords = append(allRecords, *xFields)
+					err = json.Unmarshal(in, &tmpStruct)
+					CheckError("LastXFields(2)", err)
+
+					xFields.Id = tmpStruct.Id
+					xFields.Key = string(tmpStruct.Key)
+					xFields.Data = string(tmpStruct.Data)
+					allRecords = append(allRecords, *xFields)
+				}
+			}
+			allRecord, err = json.Marshal(allRecords)
+			CheckError("LastXFields(3)", err)
 		}
 	}
-
-	allRecord, err := json.Marshal(allRecords)
-	CheckError("LastXFields(3)", err)
-
 	return allRecord
 }
 
@@ -304,44 +354,56 @@ func LastXFields(count int) []byte {
 // must specify format required Example: FirstField("json")
 func FirstField(f string) string {
 
-	lastLine := 0
-	line := ""
-	file, err := os.Open(getFile())
 	result := ""
-	CheckError("LastField(1)", err)
-	defer file.Close()
-	var r io.Reader = file
-	sc := bufio.NewScanner(r)
 
-	for sc.Scan() {
-		lastLine++
-		if lastLine == 1 {
-			line = sc.Text()
-		}
-	}
-
-	var s MyStruct
-	in := []byte(line)
-	err = json.Unmarshal(in, &s)
-	CheckError("LastField(2)", err)
-
-	if f == "json" {
-		out, _ := json.MarshalIndent(&s, "", "	")
-		result = string(out)
-	} else if f == "value" {
-		result = string(s.Data)
-	} else if f == "raw" {
-		result = line
-	} else if f == "key" {
-		result = string(s.Key)
-	} else if f == "id" {
-		result = strconv.Itoa(s.Id)
+	src := getFile()
+	if !fileExists(src) {
+		return fmt.Sprintf("Database %s missing!", src)
 	} else {
-		result = "Invalid format provided!"
+		fInfo, _ := os.Stat(src)
+		fsize := fInfo.Size()
+		if fsize == 0 {
+			return fmt.Sprintf("Database %s is empty!", src)
+		} else {
+			lastLine := 0
+			line := ""
+			file, err := os.Open(src)
+
+			CheckError("FirstField(1)", err)
+			defer file.Close()
+			var r io.Reader = file
+			sc := bufio.NewScanner(r)
+
+			for sc.Scan() {
+				lastLine++
+				if lastLine == 1 {
+					line = sc.Text()
+				}
+			}
+			var s MyStruct
+			in := []byte(line)
+			err = json.Unmarshal(in, &s)
+			CheckError("FirstField(2)", err)
+
+			if f == "json" {
+				out, _ := json.MarshalIndent(&s, "", "	")
+				result = string(out)
+			} else if f == "value" {
+				result = string(s.Data)
+			} else if f == "raw" {
+				result = line
+			} else if f == "key" {
+				result = string(s.Key)
+			} else if f == "id" {
+				result = strconv.Itoa(s.Id)
+			} else {
+				result = "Invalid format provided!"
+			}
+		}
+
 	}
 
 	return result
-
 }
 
 // LastField returns the last entry of the database in all formats [ raw | json | id | key | value ] specify format required
