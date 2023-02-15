@@ -186,7 +186,7 @@ NEW
 * ModifyField - Takes ID, Key, Value (all 3 fields) and update with information provided in k & V
 
 CHECK
-** Write some code tests
+** Write some test functions
 ** Review functions code on empty database reaction
 ** Review functions code on number of rows less than available in database
 ```
