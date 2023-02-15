@@ -11,9 +11,40 @@
 
 <BR>
 
+**CreateDB - This function will create a database file if it does not exist and return true | false**
+>function: CreateDB()
+```
+Return:
+true | false
+```
+
+**DeleteDB - WARNING - this function delete the database file return true | false**
+>function: DeleteDB()
+```
+Return:
+true | false
+```
+**CreatedDBCopy creates a copy of the Database and store in UserHomeDir()**
+>function: CreatedDBCopy()
+
+```
+Return:
+PATH: /Users/ricardowagemaker/gojsontmp.db
+true | false
+```
+
+***EmptyDB function - WARNING - this will destroy the database and all data stored in it!***
+
+>function: EmptyDB() 
+
+```
+Return:
+true | false
+```
+
 ***AddField() function take in ((key)string, (Value) string) and add to database.***
 
->AddField("New string Entry", "string of data representing a the value")
+>function: AddField("New string Entry", "string of data representing a the value")
 
 ```
 Return:
@@ -22,7 +53,7 @@ true | false
 
 ***CountSize() function will return number of rows in the gojsondb.db***
 
->CountSize()
+>function: CountSize()
 
 ````
 Result:
@@ -31,35 +62,35 @@ Result:
 
 ***LastField() func returns the last entry in multi-format [ raw | json | id | key | value ]***
 
->LastField("raw")
+>function: LastField("raw")
 
 ```
 Result:
 {"id":44,"key":"New Entry","data":"string of data representing a the value"}
 ```
 
->LastField("id")
+>function: LastField("id")
 
 ```
 Result:
 44
 ```
 
->LastField("key")
+>function: LastField("key")
 
 ```
 Result:
 New Entry
 ```
 
->LastField("value")
+>function: LastField("value")
 
 ```
 Result:
 string of data representing a the value
 ```
 
->LastField("json")
+>function: LastField("json")
 
 ```
 Result:
@@ -71,7 +102,7 @@ Result:
 ```
 ***FirstField func returns the first entry of gojsondb.db in all formats [ raw | json | id | key | value ] specify format required***
 
->FirstField("raw")
+>function: FirstField("raw")
 
 ```
 Result:
@@ -79,14 +110,14 @@ Result:
 ```
 
 ***SelectByID func returns an entry string for a specific id in all formats [ raw | json | id | key | value ]***
->SelectByID(10, "raw")
+>function: SelectByID(10, "raw")
 
 ```
 Result:
 {"id":10,"key":"Roman","data":"string of data representing a the value of X"}
 ```
 
->SelectByID(10, "value")
+>function: SelectByID(10, "value")
 
 ```
 Result:
@@ -94,7 +125,7 @@ string of data representing a the value of X
 ```
 
 ***UniqueID function returns an int for the last used UniqueID***
-> UniqueID()
+>function: UniqueID()
 
 ```
 Result:
@@ -102,7 +133,7 @@ Result:
 ```
 
 **LastXFields returns last X number of entries from db in byte[] format**
-> LastXFields(2)
+>function: LastXFields(2)
 
 ```
 Example:
@@ -125,7 +156,7 @@ id: 44, key: New Entry, data: string of data representing a the value
 ```
 
 **FirstXFields returns last X number of entries from db in byte[] format**
-> FirstXFields(2)
+>function: FirstXFields(2)
 
 ```
 Example:
@@ -147,42 +178,40 @@ id: 1, key: New Entry, data: string of data representing a the value
 id: 2, key: New Entry, data: string of data representing a the value
 ```
 
-**CreateDB - This function will create a database file if it does not exist and return true | false**
->CreateDB()
-```
-Return:
-true | false
-```
-
-**DeleteDB - WARNING - this function delete the database file return true | false**
->DeleteDB()
-```
-Return:
-true | false
-```
-**CreatedDBCopy creates a copy of the Database and store in UserHomeDir()**
-> CreatedDBCopy()
+**RemoveField function takes an unique field id as an input and remove the matching field entry**
+>function: RemoveField(2)
 
 ```
-Return:
-PATH: /Users/ricardowagemaker/gojsontmp.db
-true | false
-```
+Example:
 
-***EmptyDB function - WARNING - this will destroy the database and all data stored in it!***
+// Delete the field Id 2 (this can not be undone)
+fmt.Println("Return: ", RemoveField(2))
+fmt.Println()
 
-> EmptyDB() 
+// Check results by printing the first 2 rows in database
+var received = FirstXFields(2)
+bytes := received
+var data []MyStruct
+json.Unmarshal(bytes, &data)
 
-```
-Return:
-true | false
+for l := range data {
+        fmt.Printf("id: %v, key: %v, data: %s", data[l].Id, data[l].Key, data[1].Data)
+        fmt.Println()
+}
+
+Result:
+
+Return:  true
+
+id: 1, key: New Entry, data: string of data representing a the value
+id: 3, key: New Entry, data: string of data representing a the value
+
 ```
 
 # STILL TO DO
 
 ```
 NEW
-* RemoveField - Takes an unique id as an input and remove the matching field entry
 * ModifyField - Takes an id, Key & Value (all 3 fields) and update with information provided for key & value
 
 CHECK

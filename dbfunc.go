@@ -7,7 +7,7 @@ import (
 )
 
 // CreatedDBCopy creates a copy of the Database and store in UserHomeDir()
-func CreatedDBCopy() bool {
+func CreatedDBCopy() (string, bool) {
 
 	dirname, err := os.UserHomeDir()
 	CheckError("CreatedDBCopy(0)", err)
@@ -29,7 +29,7 @@ buffering:
 		n, err := fin.Read(buf)
 		if err != nil && err != io.EOF {
 			CheckError("CreatedDBCopy(3)", err)
-			return false
+			return "failed to create DB", false
 		}
 
 		if n == 0 {
@@ -40,11 +40,10 @@ buffering:
 
 		if _, err := tmp.Write(buf[:n]); err != nil {
 			CheckError("CreatedDBCopy(4)", err)
-			return false
+			return "failed to create DB", false
 		}
 	}
-	fmt.Println("PATH: ", dst)
-	return true
+	return dst, true
 }
 
 // CreateDB - This function will create a database file if it does not exist and return true | false

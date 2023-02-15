@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -63,24 +62,42 @@ func AddField(key, data string) bool {
 	return true
 }
 
-// RemoveField - WARNING: takes an id as an input and remove add matching string (Can not be undone)
+// RemoveField function takes an unique field id as an input and remove the matching field entry
 func RemoveField(id int) bool {
 
-	fmt.Println("Check ID:", id)
+	line := SelectByID(id, "raw")
 
-	CreatedDBCopy()
-	dirname, err := os.UserHomeDir()
-	CheckError("RemoveField(0)", err)
-	src := "gojsontmp.db"
+	//CreatedDBCopy()
+	// dirname, err := os.UserHomeDir()
+	// CheckError("RemoveField(0)", err)
+	// src := "gojsontmp.db"
+	// fpath := fmt.Sprintf("%s%s%s", dirname, string(getOS()), src)
 
-	fpath := fmt.Sprintf("%s%s%s", dirname, string(getOS()), src)
+	fpath := getFile()
 	f, err := os.Open(fpath)
-	if err != nil {
-		log.Fatal(err)
+	CheckError("RemoveField(1)", err)
+
+	var bs []byte
+	buf := bytes.NewBuffer(bs)
+
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		if scanner.Text() != line {
+			_, err := buf.Write(scanner.Bytes())
+			CheckError("RemoveField(2)", err)
+			_, err = buf.WriteString("\n")
+			CheckError("RemoveField(3)", err)
+		}
 	}
+	if err := scanner.Err(); err != nil {
+		CheckError("RemoveField(4)", err)
+	}
+
+	err = os.WriteFile(fpath, buf.Bytes(), 0666)
+	CheckError("RemoveField(5)", err)
 	f.Close()
 
-	return false
+	return true
 }
 
 // SelectByID function returns an entry string for a specific id in all formats [ raw | json | id | key | value ]
