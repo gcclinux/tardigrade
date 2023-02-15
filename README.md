@@ -62,7 +62,7 @@ Result:
 44
 ````
 
-***LastField() func returns the last entry in multi-format [ raw | json | id | key | value ]***
+***LastField() func returns the last entry in multi-format \[ raw | json | id | key | value ]***
 
 >function: LastField("raw")
 
@@ -117,7 +117,7 @@ Result:
         "data": "string of data representing a the value"
 }
 ```
-***FirstField func returns the first entry of gojsondb.db in all formats [ raw | json | id | key | value ] specify format required***
+***FirstField func returns the first entry of gojsondb.db in all formats \[ raw | json | id | key | value ] specify format required***
 
 >function: FirstField("raw")
 
@@ -129,7 +129,7 @@ Result:
 {"id":1,"key":"one","data":"string data test"}
 ```
 
-***SelectByID func returns an entry string for a specific id in all formats [ raw | json | id | key | value ]***
+***SelectByID func returns an entry string for a specific id in all formats \[ raw | json | id | key | value ]***
 >function: SelectByID(10, "raw")
 
 ```
