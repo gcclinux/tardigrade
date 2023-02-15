@@ -182,8 +182,8 @@ true | false
 
 ```
 NEW
-* RemoveField - WARNING: takes an id as an input and remove add matching the unique id
-* ModifyField - Takes ID, Key, Value (all 3 fields) and update with information provided in k & V
+* RemoveField - Takes an unique id as an input and remove the matching field entry
+* ModifyField - Takes an id, Key & Value (all 3 fields) and update with information provided for key & value
 
 CHECK
 ** Write some test functions
