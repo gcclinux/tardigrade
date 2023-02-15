@@ -5,7 +5,7 @@
 <br>
 
 ## Getting Started
->go get wagemaker.no-ip.co.uk:3000/ricardo/gojsondb
+>>go get [https://github.com/gcclinux/tardigrade](https://github.com/gcclinux/tardigrade)
 
 <BR>
 
