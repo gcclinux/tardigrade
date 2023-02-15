@@ -1,5 +1,7 @@
 
-## Small and simple noSQL JSON database for small apps and easy use.
+## "gojsondb" is small and simple noSQL JSON database for small apps and easy use.
+###### *Updated: Wed Feb 15 16:25:45 GMT 2023*
+###### *release: 0.0.1*
 <br>
 
 ## Getting Started
@@ -230,16 +232,39 @@ id: 3, key: New Entry, data: string of data representing a the value
 
 ```
 
+**ModifyField - Takes an id, Key & Value (all 3 fields) and update with information provided for key & value**
+> ModifyField(2, "Updated key", "Updated data set with new inforation")
+
+```
+Example:
+// Check current information in ROW 2 BEFORE CHANGE
+fmt.Println(SelectByID(2, "raw"))
+
+// MODIFY ROW 2 with NEW information provided in key & value
+var change = ModifyField(2, "Updated key", "Updated data set with new inforation")
+fmt.Println("Changed: ", change)
+
+// Check current information in ROW 2 AFTER CHANGE
+fmt.Println(SelectByID(2, "raw"))
+
+Result:
+
+{"id":2,"key":"Before Entry","data":"string of data representing a the value"}
+Changed:  true
+{"id":2,"key":"Updated key","data":"Updated data set with new inforation"}
+```
+
 # STILL TO DO
 
 ```
-WP
-* ModifyField - Takes an id, Key & Value (all 3 fields) and update with information provided for key & value
+RELEASE NOTE:
 
-ADDITIONAL WORK
+** Initial version 0.0.1
+
+OUTSTANDING
 ** Write some test functions
-** Review functions code on empty database reaction
-** Review functions code on number of rows less than available in database
+** Review functions code for empty database and returns
+** Review functions code if number of rows is less than query in database
 ```
 
 

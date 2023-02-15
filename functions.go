@@ -9,6 +9,7 @@ import (
 	"os"
 	"runtime"
 	"strconv"
+	"strings"
 )
 
 // MyStruct contains the structure of the data stored into the gojsondb.db
@@ -139,12 +140,33 @@ func SelectByID(id int, f string) string {
 	return result
 }
 
-// ModifyField takes ID, Key, Value (all 3 fields) and update with information provided in k & V
+// ModifyField function takes ID, Key, Value and update ROW with new information provided
 func ModifyField(id int, k, v string) bool {
 
-	//line := SelectByID(id, "raw")
+	status := true
 
-	return false
+	before := SelectByID(id, "raw")
+	var s MyStruct
+	s.Id = id
+	s.Key = k
+	s.Data = v
+	out, _ := json.Marshal(&s)
+	after := string(out)
+
+	input, err := os.ReadFile(getFile())
+	CheckError("ModifyField(1)", err)
+	lines := strings.Split(string(input), "\n")
+
+	for i, line := range lines {
+		if strings.Contains(line, before) {
+			lines[i] = after
+		}
+	}
+	output := strings.Join(lines, "\n")
+	err = os.WriteFile(getFile(), []byte(output), 0644)
+	CheckError("ModifyField(2)", err)
+
+	return status
 }
 
 // CountSize will return number of rows in the gojsondb.db
