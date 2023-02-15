@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -201,8 +202,14 @@ func CountSize() int {
 
 // UniqueID function returns an int for the last used UniqueID to AutoIncrement in the AddField()
 func UniqueID() int {
-	lastID, err := strconv.Atoi(LastField("id"))
-	CheckError("UniqueID()", err)
+	lastID := 0
+	src := getFile()
+	if !fileExists(src) {
+		return lastID
+	} else {
+		lastID, _ = strconv.Atoi(LastField("id"))
+	}
+
 	return lastID
 }
 
@@ -339,40 +346,54 @@ func FirstField(f string) string {
 
 // LastField returns the last entry of the database in all formats [ raw | json | id | key | value ] specify format required
 func LastField(f string) string {
-	lastLine := 0
-	line := ""
-	file, err := os.Open(getFile())
+
 	result := ""
-	CheckError("LastField(1)", err)
-	defer file.Close()
-	var r io.Reader = file
-	sc := bufio.NewScanner(r)
 
-	for sc.Scan() {
-		lastLine++
-		if lastLine == CountSize() {
-			line = sc.Text()
-		}
-	}
-
-	var s MyStruct
-	in := []byte(line)
-	err = json.Unmarshal(in, &s)
-	CheckError("LastField(2)", err)
-
-	if f == "json" {
-		out, _ := json.MarshalIndent(&s, "", "	")
-		result = string(out)
-	} else if f == "value" {
-		result = string(s.Data)
-	} else if f == "raw" {
-		result = line
-	} else if f == "key" {
-		result = string(s.Key)
-	} else if f == "id" {
-		result = strconv.Itoa(s.Id)
+	src := getFile()
+	if !fileExists(src) {
+		return fmt.Sprintf("Database %s missing!", src)
 	} else {
-		result = "Invalid format provided!"
+		fInfo, _ := os.Stat(src)
+		fsize := fInfo.Size()
+		if fsize == 0 {
+			return fmt.Sprintf("Database %s is empty!", src)
+		} else {
+			lastLine := 0
+			line := ""
+			file, err := os.Open(src)
+
+			CheckError("LastField(1)", err)
+			defer file.Close()
+			var r io.Reader = file
+			sc := bufio.NewScanner(r)
+
+			for sc.Scan() {
+				lastLine++
+				if lastLine == CountSize() {
+					line = sc.Text()
+				}
+			}
+			var s MyStruct
+			in := []byte(line)
+			err = json.Unmarshal(in, &s)
+			CheckError("LastField(2)", err)
+
+			if f == "json" {
+				out, _ := json.MarshalIndent(&s, "", "	")
+				result = string(out)
+			} else if f == "value" {
+				result = string(s.Data)
+			} else if f == "raw" {
+				result = line
+			} else if f == "key" {
+				result = string(s.Key)
+			} else if f == "id" {
+				result = strconv.Itoa(s.Id)
+			} else {
+				result = "Invalid format provided!"
+			}
+		}
+
 	}
 
 	return result

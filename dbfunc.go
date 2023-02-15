@@ -11,9 +11,12 @@ func CreatedDBCopy() (string, bool) {
 
 	dirname, err := os.UserHomeDir()
 	CheckError("CreatedDBCopy(0)", err)
-	target := "gojsontmp.db"
+	target := "tardigradecopy.db"
 
 	src := getFile()
+	if !fileExists(src) {
+		return fmt.Sprintf("Database %s missing!", src), false
+	}
 	fin, err := os.Open(src)
 	CheckError("CreatedDBCopy(1)", err)
 	defer fin.Close()
