@@ -76,11 +76,26 @@ func DeleteDB() bool {
 	return true
 }
 
-// fileExists function will check if the gojsondb.db exists and return true / false
+// fileExists function will check if the database exists and return true / false
 func fileExists(filename string) bool {
 	info, err := os.Stat(filename)
 	if os.IsNotExist(err) {
 		return false
 	}
 	return !info.IsDir()
+}
+
+// EmptyDB function - WARNING - this will destroy the database and all data stored in it!
+func EmptyDB() bool {
+
+	status := true
+
+	if DeleteDB() {
+		if !CreateDB() {
+			status = false
+		}
+	} else {
+		status = false
+	}
+	return status
 }

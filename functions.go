@@ -165,7 +165,7 @@ func UniqueID() int {
 	return lastID
 }
 
-// FirstXFields returns last X number of entries from db in byte[] format
+// FirstXFields returns first X number of entries from database in byte[] format
 //
 // Example:
 // specify number of fields to return FirstXFields(2)
@@ -208,7 +208,7 @@ func FirstXFields(count int) []byte {
 	return allRecord
 }
 
-// LastXFields returns last X number of entries from db in byte[] format
+// LastXFields returns last X numbers of entries from db in byte[] format
 //
 // Example:
 // specify number of fields to return LastXFields(2)
@@ -252,8 +252,8 @@ func LastXFields(count int) []byte {
 	return allRecord
 }
 
-// FirstField returns the first entry of gojsondb.db in all formats [ raw | json | id | key | value ]
-// specify format required FirstField("json")
+// FirstField returns the first entry in the database in all formats [ raw | json | id | key | value ],
+// must specify format required Example: FirstField("json")
 func FirstField(f string) string {
 
 	lastLine := 0
@@ -296,7 +296,7 @@ func FirstField(f string) string {
 
 }
 
-// LastField returns the last entry of gojsondb.db in all formats [ raw | json | id | key | value ] specify format required
+// LastField returns the last entry of the database in all formats [ raw | json | id | key | value ] specify format required
 func LastField(f string) string {
 	lastLine := 0
 	line := ""

@@ -78,15 +78,6 @@ Result:
 {"id":1,"key":"one","data":"string data test"}
 ```
 
-***EmptyDB function - WARNING - this will destroy all data stored in gojsondb.db!***
-
-> EmptyDB() 
-
-```
-Return:
-true | false
-```
-
 ***SelectByID func returns an entry string for a specific id in all formats [ raw | json | id | key | value ]***
 >SelectByID(10, "raw")
 
@@ -175,6 +166,15 @@ true | false
 ```
 Return:
 PATH: /Users/ricardowagemaker/gojsontmp.db
+true | false
+```
+
+***EmptyDB function - WARNING - this will destroy the database and all data stored in it!***
+
+> EmptyDB() 
+
+```
+Return:
 true | false
 ```
 
