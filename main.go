@@ -16,6 +16,8 @@ func main() {
 	var data []MyStruct
 	json.Unmarshal(bytes, &data)
 
+	fmt.Println("size:", data[len(data)-1])
+
 	fmt.Printf("id: %v, key: %v, data: %s", data[0].Id, data[0].Key, data[0].Data)
 
 	// for x := range data {
