@@ -6,7 +6,7 @@
 <br>
 
 ## Getting Started
->git clone [http://wagemaker.no-ip.co.uk:3000/ricardo/tardigrade.git](http://wagemaker.no-ip.co.uk:3000/ricardo/tardigrade.git)
+>git clone [https://github.com/gcclinux/tardigrade.git](https://github.com/gcclinux/tardigrade.git)
 
 <BR>
 
