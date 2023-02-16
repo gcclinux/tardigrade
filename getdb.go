@@ -5,6 +5,7 @@ import (
 	"os"
 )
 
+// Tardigrade is the main structure
 type Tardigrade struct{}
 
 type config struct {

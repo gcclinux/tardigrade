@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-// CreatedDBCopy creates a copy of the Database and store in UserHomeDir()
+// CreatedDBCopy creates a copy of the Database and store in UserHomeDir().
 func (tar *Tardigrade) CreatedDBCopy() (msg string, status bool) {
 	status = true
 	dirname, err := os.UserHomeDir()

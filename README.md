@@ -1,6 +1,6 @@
 
 ## "tardigrade" is small and simple noSQL database for small apps and easy use.
-*updated:  Wed 15 Feb 21:52:17 GMT 2023*<br>
+*updated:  Wed 15 Feb 21:52:16 GMT 2023*<br>
 *release:  0.0.3*
 
 <br>

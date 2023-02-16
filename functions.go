@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-// MyStruct contains the structure of the data stored into the tardigrade.db
+// MyStruct contains the structure of the data stored into the tardigrade.db!
 type MyStruct struct {
 	Id   int    `json:"id"`
 	Key  string `json:"key"`
