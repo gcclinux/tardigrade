@@ -6,7 +6,7 @@
 <br>
 
 ## Getting Started
->go get [github.com/gcclinux/tardigrade](github.com/gcclinux/tardigrade)
+>git clone [https://github.com/gcclinux/tardigrade.git](https://github.com/gcclinux/tardigrade.git)
 
 <BR>
 
