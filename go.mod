@@ -1,3 +1,3 @@
-module github.com/gcclinux/gojsondb
+module github.com/gcclinux/tardigrade
 
 go 1.20
