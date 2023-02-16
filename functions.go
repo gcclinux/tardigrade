@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-// MyStruct contains the structure of the data stored into the gojsondb.db
+// MyStruct contains the structure of the data stored into the tardigrade.db
 type MyStruct struct {
 	Id   int    `json:"id"`
 	Key  string `json:"key"`
@@ -37,7 +37,7 @@ func (tar *Tardigrade) getOS() rune {
 	return PATH_SEPARATOR
 }
 
-// AddField take in (key, sprint) (data, string) and add to gojsondb.db
+// AddField take in (key, sprint) (data, string) and add to tardigrade.db
 func (tar *Tardigrade) AddField(key, data string) bool {
 
 	if !tar.fileExists(tar.getFile()) {
@@ -169,12 +169,16 @@ func (tar *Tardigrade) SelectByID(id int, f string) string {
 	return result
 }
 
-// ModifyField function takes ID, Key, Value and update ROW with new information provided
-func (tar *Tardigrade) ModifyField(id int, k, v string) bool {
+// ModifyField function takes ID, Key, Value and update row = ID with new information provided
+func (tar *Tardigrade) ModifyField(id int, k, v string) (msg string, status bool) {
 
-	status := true
+	status = true
 	src := tar.getFile()
 	before := tar.SelectByID(id, "raw")
+	if strings.Contains(before, "Record") && strings.Contains(before, "empty!") {
+		status = false
+		return before, status
+	}
 	var s MyStruct
 	s.Id = id
 	s.Key = k
@@ -195,10 +199,11 @@ func (tar *Tardigrade) ModifyField(id int, k, v string) bool {
 	err = os.WriteFile(src, []byte(output), 0644)
 	CheckError("ModifyField(2)", err)
 
-	return status
+	msg = tar.SelectByID(id, "raw")
+	return msg, status
 }
 
-// CountSize will return number of rows in the gojsondb.db
+// CountSize will return number of rows in the tardigrade.db
 func (tar *Tardigrade) CountSize() int {
 
 	src := tar.getFile()
@@ -325,13 +330,17 @@ func (tar *Tardigrade) LastXFields(count int) []byte {
 		} else {
 			if tar.CountSize() < count {
 				count = tar.CountSize()
-				start = tar.CountSize()
 			} else if count > 1 {
 				count = count - 1
-				start = tar.CountSize() - count
 			}
 			xFields := new(MyStruct)
 			var tmpStruct MyStruct
+
+			if count == 1 {
+				start = tar.CountSize()
+			} else {
+				start = tar.CountSize() - count
+			}
 			end = tar.CountSize()
 
 			file, err := os.Open(src)
@@ -340,7 +349,6 @@ func (tar *Tardigrade) LastXFields(count int) []byte {
 			defer file.Close()
 			var r io.Reader = file
 			sc := bufio.NewScanner(r)
-
 			for sc.Scan() {
 				lastLine++
 				if lastLine >= start && lastLine <= end {

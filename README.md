@@ -18,7 +18,7 @@ type Tardigrade struct{}
 func (*Tardigrade).AddField(key string, data string) bool
 func (*Tardigrade).CountSize() int
 func (*Tardigrade).CreateDB() (msg string, status bool)
-func (*Tardigrade).CreatedDBCopy() (string, bool)
+func (*Tardigrade).CreatedDBCopy() (msg string, status bool)
 func (*Tardigrade).DeleteDB() (msg string, status bool)
 func (*Tardigrade).EmptyDB() (msg string, status bool)
 func (*Tardigrade).FirstField(f string) string
@@ -27,7 +27,7 @@ func (*Tardigrade).GetUpdated() (updated string)
 func (*Tardigrade).GetVersion() (release string)
 func (*Tardigrade).LastField(f string) string
 func (*Tardigrade).LastXFields(count int) []byte
-func (*Tardigrade).ModifyField(id int, k string, v string) bool
+func (*Tardigrade).ModifyField(id int, k string, v string) (msg string, status bool)
 func (*Tardigrade).RemoveField(id int) (string, bool)
 func (*Tardigrade).SelectByID(id int, f string) string
 func (*Tardigrade).UniqueID() int
@@ -254,21 +254,54 @@ Result:
 	52
 ```
 
+
+**FirstXFields returns last X number of entries from db in byte[] format**
+>function: FirstXFields()
+
+```
+Example:
+	tar := Tardigrade{}
+	var received = tar.FirstXFields(2)
+
+	bytes := received
+	var data []MyStruct
+	size := len(data)
+	json.Unmarshal(bytes, &data)
+
+	if size == 1 {
+		fmt.Printf("id: %v, key: %v, data: %s", data[0].Id, data[0].Key, data[0].Data)
+	} else {
+		for x := range data {
+			fmt.Printf("id: %v, key: %v, data: %s", data[x].Id, data[x].Key, data[x].Data)
+			fmt.Println()
+		}
+	}
+
+Result:
+	id: 1, key: New string Entry, data: string of data representing a the value
+	id: 2, key: New string Entry 0, data: string of data representing a the value
+```
+
 **LastXFields returns last X number of entries from db in values byte[] format**
 >function: LastXFields()
 
 ```
-Example 1: (true)
+Example 1: (always true)
 	tar := Tardigrade{}
 	var received = tar.LastXFields(2)
 
 	bytes := received
 	var data []MyStruct
+	size := len(data)
 	json.Unmarshal(bytes, &data)
 
-	for l := range data {
-		fmt.Printf("id: %v, key: %v, data: %s", data[l].Id, data[l].Key, data[1].Data)
-		fmt.Println()
+	if size == 1 {
+		fmt.Printf("id: %v, key: %v, data: %s", data[0].Id, data[0].Key, data[0].Data)
+	} else {
+		for x := range data {
+			fmt.Printf("id: %v, key: %v, data: %s", data[x].Id, data[x].Key, data[x].Data)
+			fmt.Println()
+		}
 	}
 
 Result:
@@ -276,97 +309,67 @@ Result:
 	id: 52, key: New string Entry 50, data: string of data representing a the value
 ```
 
-**FirstXFields returns last X number of entries from db in byte[] format**
->function: FirstXFields(2)
-
-```
-Example:
-var received = FirstXFields(2)
-
-bytes := received
-var data []MyStruct
-json.Unmarshal(bytes, &data)
-
-for l := range data {
-        fmt.Printf("id: %v, key: %v, data: %s", data[l].Id, data[l].Key, data[1].Data)
-        fmt.Println()
-}
-
-Result:
-
-id: 1, key: New Entry, data: string of data representing a the value
-id: 2, key: New Entry, data: string of data representing a the value
-```
-
 **RemoveField function takes an unique field id as an input and remove the matching field entry**
->function: RemoveField(2)
+>function: RemoveField()
 
 ```
-Example:
-// Delete the field Id 2 (this can not be undone)
-msg, status := RemoveField(2)
-fmt.Println(msg, status)
-fmt.Println()
-
-// Check results by printing the first 2 rows in database
-var received = FirstXFields(2)
-bytes := received
-var data []MyStruct
-json.Unmarshal(bytes, &data)
-
-for l := range data {
-        fmt.Printf("id: %v, key: %v, data: %s", data[l].Id, data[l].Key, data[1].Data)
-        fmt.Println()
-}
+Example 1: (true | false)
+	tar := Tardigrade{}
+	msg, status := tar.RemoveField(2)
+	fmt.Println(msg, status)
 
 Result:
-
-Return:  true
-
-id: 1, key: New Entry, data: string of data representing a the value
-id: 3, key: New Entry, data: string of data representing a the value
-
-Return:  false
-
-Record 2 is empty! false
-id: 1, key: New string Entry, data: string of data representing a the value
-id: 3, key: New string Entry, data: string of data representing a the value
-
-
+	{"id":2,"key":"New string Entry 0","data":"string of data representing a the value"} true
+	Record 2 is empty! false
+	Database tardigrade.db is empty! false
 ```
 
-**ModifyField - Takes an id, Key & Value (all 3 fields) and update with information provided for key & value**
+**ModifyField function takes ID, Key, Value and update row = ID with new information provided**
 > ModifyField(2, "Updated key", "Updated data set with new inforation")
 
 ```
-Example:
-// Check current information in ROW 2 BEFORE CHANGE
-fmt.Println(SelectByID(2, "raw"))
-
-// MODIFY ROW 2 with NEW information provided in key & value
-var change = ModifyField(2, "Updated key", "Updated data set with new inforation")
-fmt.Println("Changed: ", change)
-
-// Check current information in ROW 2 AFTER CHANGE
-fmt.Println(SelectByID(2, "raw"))
+Example 1: (true)
+	tar := Tardigrade{}
+	change, status := tar.ModifyField(2, "Updated key 2", "with new Updated data set with and new inforation")
+	fmt.Println(change, status)
 
 Result:
+	{"id":2,"key":"Updated key 2","data":"with new Updated data set with and new inforation"} true
 
-{"id":2,"key":"Before Entry","data":"string of data representing a the value"}
-Changed:  true
-{"id":2,"key":"Updated key","data":"Updated data set with new inforation"}
+Example 2: (false)
+	tar := Tardigrade{}
+	change, status := tar.ModifyField(100, "Updated key 2", "with new Updated data set with and new inforation")
+	fmt.Println(change, status)
+
+result:
+	Record 100 is empty! false
+
 ```
+
+Additon couple of informaional functions
+```
+Example:
+	tar := Tardigrade{}
+	fmt.Println(tar.GetUpdated())
+	fmt.Println(tar.GetVersion())
+
+Result:
+	Wed 15 Feb 22:52:17 GMT 2023
+	0.0.3
+```
+
 
 RELEASE NOTE:
 
 ```
 ** release 0.0.1 - Initial version
-** release 0.0.2 - Cleanup comments and unused files
+** release 0.0.2 - Updated README.md and corrected some issues.
+** release 0.0.3 - Modified to use structure method
 ```
 
-OUTSTANDING
+OUTSTANDING:
 ```
-** Write some test functions
+** Write and share some test functions
 ```
 
 
