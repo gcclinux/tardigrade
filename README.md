@@ -1,7 +1,7 @@
 
 ## "tardigrade" is small and simple noSQL database for small apps and easy use.
 *updated:  Wed 15 Feb 21:52:17 GMT 2023*<br>
-*release:  0.0.2*
+*release:  0.0.3*
 
 <br>
 
@@ -10,6 +10,29 @@
 
 <BR>
 
+Current structure and available functions()
+
+```
+type Tardigrade struct{}
+
+func (*Tardigrade).AddField(key string, data string) bool
+func (*Tardigrade).CountSize() int
+func (*Tardigrade).CreateDB() (msg string, status bool)
+func (*Tardigrade).CreatedDBCopy() (string, bool)
+func (*Tardigrade).DeleteDB() (msg string, status bool)
+func (*Tardigrade).EmptyDB() (msg string, status bool)
+func (*Tardigrade).FirstField(f string) string
+func (*Tardigrade).FirstXFields(count int) []byte
+func (*Tardigrade).GetUpdated() (updated string)
+func (*Tardigrade).GetVersion() (release string)
+func (*Tardigrade).LastField(f string) string
+func (*Tardigrade).LastXFields(count int) []byte
+func (*Tardigrade).ModifyField(id int, k string, v string) bool
+func (*Tardigrade).RemoveField(id int) (string, bool)
+func (*Tardigrade).SelectByID(id int, f string) string
+func (*Tardigrade).UniqueID() int
+```
+
 # HOW-TO-USE
 
 <BR>
@@ -17,30 +40,56 @@
 **CreateDB - This function will create a database file if it does not exist and return true | false**
 >function: CreateDB()
 ```
+Example 1: (ignore return)
+	tar := Tardigrade{}
+	tar.CreateDB()
+
+Example 2 (capture return):
+	tar := Tardigrade{}
+	msg, status := tar.CreateDB()
+	fmt.Println(msg, status)
+
 Return:
-true | false
+	Created: <full_path>/tardigrade.db true
+	Exist: <full_path>/tardigrade.db false
+
 ```
 
 **DeleteDB - WARNING - this function delete the database file return true | false**
 >function: DeleteDB()
 ```
+Example 1: (ignore return)
+	tar := Tardigrade{}
+	tar.DeleteDB()
+
+Example 2 (capture return):
+	tar := Tardigrade{}
+	msg, status := tar.DeleteDB()
+	fmt.Println(msg, status)
+
 Return:
-true | false
+	Removed: <full_path>/tardigrade.db true
+	Unavailable: <full_path>/tardigrade.db false
+
 ```
 **CreatedDBCopy creates a copy of the Database and store in UserHomeDir()**
 >function: CreatedDBCopy()
 
 ```
-Example:
+Example 1: (ignore return)
+	tar := Tardigrade{}
+	tar.CreatedDBCopy()
 
-msg, status := CreatedDBCopy()
-fmt.Println("CreatedDBCopy: ", msg, status)
+Example 2 (capture return):
+	tar := Tardigrade{}
+	msg, status := tar.CreatedDBCopy()
+	fmt.Println(msg, status)
 
-Return: true
-CreatedDBCopy:  /home/ricardowagemaker/tardigradecopy.db true
-
-Return: false
-CreatedDBCopy:  Database tardigrade.db missing! false
+Return:
+	Copy: <full_path>/tardigradecopy.db true
+	Failed: database tardigrade.db missing! false
+	Failed: buffer error failed to create database! false
+	Failed: permission error failed to create database! false
 
 ```
 
@@ -49,17 +98,39 @@ CreatedDBCopy:  Database tardigrade.db missing! false
 >function: EmptyDB() 
 
 ```
+Example 1: (ignore return)
+	tar := Tardigrade{}
+	tar.EmptyDB()
+
+Example 2 (capture return):
+	tar := Tardigrade{}
+	msg, status := tar.EmptyDB()
+	fmt.Println(msg, status)
+
 Return:
-true | false
+	Empty: database now clean! true
+	Failed: no permission to re-create! false
+	Missing: could not find database false! false
+
 ```
 
 **AddField() function take in ((key)string, (Value) string) and add to database.**
 
->function: AddField("New string Entry", "string of data representing a the value")
+>function: AddField()
 
 ```
+Example 1: (ignore return)
+	tar := Tardigrade{}
+	tar.AddField("New string Entry", "string of data representing a the value")
+
+Example 2 (capture return):
+	tar := Tardigrade{}
+	status := tar.AddField("New string Entry", "string of data representing a the value")
+	fmt.Println(status)
+
 Return:
-true | false
+	true | false
+
 ```
 
 **CountSize() function will return number of rows in the gojsondb.db**
@@ -67,57 +138,71 @@ true | false
 >function: CountSize()
 
 ````
+Example (capture return):
+	tar := Tardigrade{}
+	fmt.Println(tar.CountSize())
+
 Result:
-44
+	44
 ````
+
+**FirstField func returns the first entry of gojsondb.db in all formats \[ raw | json | id | key | value ] specify format required**
+
+>function: FirstField()
+
+```
+Example 1: (true | failed)
+	tar := Tardigrade{}
+	fmt.Println(tar.FirstField("raw"))
+
+Result: 
+	{"id":1,"key":"one","data":"string data test"}
+	Failed: database tardigrade.db is empty!
+	Failed: database tardigrade.db missing!
+
+Example 2: (true)
+	tar := Tardigrade{}
+	fmt.Println(tar.FirstField("json"))
+
+Result:
+{
+        "id": 1,
+        "key": "New string Entry",
+        "data": "string of data representing a the value"
+}
+```
 
 **LastField() func returns the last entry in multi-format \[ raw | json | id | key | value ]**
 
->function: LastField("raw")
+>function: LastField()
 
 ```
-Example: 
-fmt.Println(LastField("raw"))
+Example 1: (true | failed)
+	tar := Tardigrade{}
+	fmt.Println(tar.FirstField("raw"))
+
+Result: 
+	{"id":44,"key":"New Entry","data":"string of data representing a the value"}
+	Failed: database tardigrade.db is empty!
+	Failed: database tardigrade.db missing!
+
+Example 2: (true)
+	tar := Tardigrade{}
+	fmt.Println(tar.LastField("value"))
 
 Result:
-{"id":44,"key":"New Entry","data":"string of data representing a the value"}
-```
+	string of data representing a the value
 
->function: LastField("id")
-
-```
-Example: 
-fmt.Println(LastField("id"))
+Example 3: (true)
+	tar := Tardigrade{}
+	fmt.Println(tar.LastField("key"))
 
 Result:
-44
-```
+	New Entry
 
->function: LastField("key")
-
-```
-Example: 
-fmt.Println(LastField("key"))
-
-Result:
-New Entry
-```
-
->function: LastField("value")
-
-```
-Example: 
-fmt.Println(LastField("value"))
-
-Result:
-string of data representing a the value
-```
-
->function: LastField("json")
-
-```
-Example: 
-fmt.Println(LastField("json"))
+Example: 4 (true)
+	tar := Tardigrade{}
+	fmt.Println(tar.LastField("json"))
 
 Result:
 {
@@ -126,68 +211,69 @@ Result:
         "data": "string of data representing a the value"
 }
 ```
-**FirstField func returns the first entry of gojsondb.db in all formats \[ raw | json | id | key | value ] specify format required**
-
->function: FirstField("raw")
-
-```
-Example: 
-fmt.Println(FirstField("raw"))
-
-Result:
-{"id":1,"key":"one","data":"string data test"}
-```
 
 **SelectByID func returns an entry string for a specific id in all formats \[ raw | json | id | key | value ]**
->function: SelectByID(10, "raw")
+>function: SelectByID()
 
 ```
-Example: 
-
-fmt.Println(SelectByID(10, "raw"))
+Example 1: (true)
+	tar := Tardigrade{}
+	fmt.Println(tar.SelectByID(10, "raw"))
 
 Result:
-{"id":10,"key":"Roman","data":"string of data representing a the value of X"}
-```
+	{"id":10,"key":"Roman","data":"string of data representing a the value of X"}
 
->function: SelectByID(10, "value")
+Example 2: (false)
+	tar := Tardigrade{}
+	fmt.Println(tar.SelectByID(100, "raw"))
 
-```
 Result:
-string of data representing a the value of X
+	Record 100 is empty!
+
+Example 3: (true)
+	tar := Tardigrade{}
+	fmt.Println(tar.SelectByID(25, "json"))
+
+Result:
+{
+        "id": 25,
+        "key": "New string Entry 23",
+        "data": "string of data representing a the value"
+}
 ```
 
 **UniqueID function returns an int for the last used UniqueID**
 >function: UniqueID()
 
 ```
-Example: 
-fmt.Println(UniqueID())
+Example: (always true)
+	tar := Tardigrade{}
+	fmt.Println(tar.UniqueID())
 
 Result:
-54
+	52
 ```
 
-**LastXFields returns last X number of entries from db in byte[] format**
->function: LastXFields(2)
+**LastXFields returns last X number of entries from db in values byte[] format**
+>function: LastXFields()
 
 ```
-Example:
-var received = LastXFields(2)
+Example 1: (true)
+	tar := Tardigrade{}
+	var received = tar.LastXFields(2)
 
-bytes := received
-var data []MyStruct
-json.Unmarshal(bytes, &data)
+	bytes := received
+	var data []MyStruct
+	json.Unmarshal(bytes, &data)
 
-for l := range data {
-        fmt.Printf("id: %v, key: %v, data: %s", data[l].Id, data[l].Key, data[1].Data)
-        fmt.Println()
-}
+	for l := range data {
+		fmt.Printf("id: %v, key: %v, data: %s", data[l].Id, data[l].Key, data[1].Data)
+		fmt.Println()
+	}
 
 Result:
-
-id: 43, key: New Entry, data: string of data representing a the value
-id: 44, key: New Entry, data: string of data representing a the value
+	id: 51, key: New string Entry 49, data: string of data representing a the value
+	id: 52, key: New string Entry 50, data: string of data representing a the value
 ```
 
 **FirstXFields returns last X number of entries from db in byte[] format**

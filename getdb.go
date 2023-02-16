@@ -5,6 +5,8 @@ import (
 	"os"
 )
 
+type Tardigrade struct{}
+
 type config struct {
 	DBFile  string
 	Release string
@@ -12,7 +14,7 @@ type config struct {
 }
 
 // getFile fucntion returns the database path
-func getFile() (dbFile string) {
+func (tar *Tardigrade) getFile() (dbFile string) {
 	file, err := os.Open("dbconf.json")
 	CheckError("Accessing dbconf.json -->", err)
 	defer file.Close()
@@ -28,7 +30,7 @@ func getFile() (dbFile string) {
 }
 
 // GetVersion function returns the current release version
-func GetVersion() (release string) {
+func (tar *Tardigrade) GetVersion() (release string) {
 	file, err := os.Open("dbconf.json")
 	CheckError("Accessing dbconf.json -->", err)
 	defer file.Close()
@@ -44,7 +46,7 @@ func GetVersion() (release string) {
 }
 
 // GetUpdated function returns the last updated time
-func GetUpdated() (updated string) {
+func (tar *Tardigrade) GetUpdated() (updated string) {
 	file, err := os.Open("dbconf.json")
 	CheckError("Accessing dbconf.json -->", err)
 	defer file.Close()

@@ -20,7 +20,7 @@ type MyStruct struct {
 	Data string `json:"data"`
 }
 
-func getOS() rune {
+func (tar *Tardigrade) getOS() rune {
 
 	PATH_SEPARATOR := '/'
 
@@ -38,16 +38,16 @@ func getOS() rune {
 }
 
 // AddField take in (key, sprint) (data, string) and add to gojsondb.db
-func AddField(key, data string) bool {
+func (tar *Tardigrade) AddField(key, data string) bool {
 
-	if !fileExists(getFile()) {
-		CreateDB()
-		if !fileExists(getFile()) {
+	if !tar.fileExists(tar.getFile()) {
+		tar.CreateDB()
+		if !tar.fileExists(tar.getFile()) {
 			return false
 		}
 	}
 
-	id := UniqueID() + 1
+	id := tar.UniqueID() + 1
 	var getStruct = MyStruct{}
 	getStruct.Id = id
 	getStruct.Key = key
@@ -56,7 +56,7 @@ func AddField(key, data string) bool {
 	response, err := json.Marshal(getStruct)
 	CheckError("Marshal", err)
 
-	file, err := os.OpenFile(getFile(), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
+	file, err := os.OpenFile(tar.getFile(), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	CheckError("O_APPEND", err)
 	file.Write(response)
 	file.WriteString("\n")
@@ -65,28 +65,28 @@ func AddField(key, data string) bool {
 }
 
 // RemoveField function takes an unique field id as an input and remove the matching field entry
-func RemoveField(id int) (string, bool) {
+func (tar *Tardigrade) RemoveField(id int) (string, bool) {
 
 	status := true
 	msg := ""
 
-	src := getFile()
-	if !fileExists(src) {
+	src := tar.getFile()
+	if !tar.fileExists(src) {
 		return (fmt.Sprintf("Database %s missing!", src)), false
 	} else {
 		fInfo, _ := os.Stat(src)
 		fsize := fInfo.Size()
-		if fsize == 0 {
+		if fsize <= 1 {
 			return (fmt.Sprintf("Database %s is empty!", src)), false
 		} else {
-			line := SelectByID(id, "raw")
+			line := tar.SelectByID(id, "raw")
 
 			if strings.Contains(line, "Record") && strings.Contains(line, "empty") {
 				status = false
 				msg = line
 			} else {
 				msg = line
-				fpath := getFile()
+				fpath := tar.getFile()
 				f, err := os.Open(fpath)
 				CheckError("RemoveField(1)", err)
 
@@ -116,22 +116,22 @@ func RemoveField(id int) (string, bool) {
 }
 
 // SelectByID function returns an entry string for a specific id in all formats [ raw | json | id | key | value ]
-func SelectByID(id int, f string) string {
+func (tar *Tardigrade) SelectByID(id int, f string) string {
 
 	regx := fmt.Sprintf("\"id\":%v,", id)
 
 	result := ""
-	src := getFile()
-	if !fileExists(src) {
+	src := tar.getFile()
+	if !tar.fileExists(src) {
 		return (fmt.Sprintf("Database %s missing!", src))
 	} else {
 		fInfo, _ := os.Stat(src)
 		fsize := fInfo.Size()
-		if fsize == 0 {
+		if fsize <= 1 {
 			return (fmt.Sprintf("Database %s is empty!", src))
 		} else {
 			line := ""
-			file, err := os.Open(getFile())
+			file, err := os.Open(src)
 			CheckError("SelectByID(1)", err)
 			defer file.Close()
 			var r io.Reader = file
@@ -170,11 +170,11 @@ func SelectByID(id int, f string) string {
 }
 
 // ModifyField function takes ID, Key, Value and update ROW with new information provided
-func ModifyField(id int, k, v string) bool {
+func (tar *Tardigrade) ModifyField(id int, k, v string) bool {
 
 	status := true
-
-	before := SelectByID(id, "raw")
+	src := tar.getFile()
+	before := tar.SelectByID(id, "raw")
 	var s MyStruct
 	s.Id = id
 	s.Key = k
@@ -182,7 +182,7 @@ func ModifyField(id int, k, v string) bool {
 	out, _ := json.Marshal(&s)
 	after := string(out)
 
-	input, err := os.ReadFile(getFile())
+	input, err := os.ReadFile(src)
 	CheckError("ModifyField(1)", err)
 	lines := strings.Split(string(input), "\n")
 
@@ -192,16 +192,19 @@ func ModifyField(id int, k, v string) bool {
 		}
 	}
 	output := strings.Join(lines, "\n")
-	err = os.WriteFile(getFile(), []byte(output), 0644)
+	err = os.WriteFile(src, []byte(output), 0644)
 	CheckError("ModifyField(2)", err)
 
 	return status
 }
 
 // CountSize will return number of rows in the gojsondb.db
-func CountSize() int {
-	f, err := os.Open(getFile())
+func (tar *Tardigrade) CountSize() int {
+
+	src := tar.getFile()
+	f, err := os.Open(src)
 	CheckError("CountSize(1)", err)
+
 	defer f.Close()
 	var r io.Reader = f
 	var count int
@@ -225,17 +228,22 @@ func CountSize() int {
 			break
 		}
 	}
+	fInfo, _ := os.Stat(src)
+	fsize := fInfo.Size()
+	if fsize > 2 && count == 0 {
+		count = 1
+	}
 	return count
 }
 
 // UniqueID function returns an int for the last used UniqueID to AutoIncrement in the AddField()
-func UniqueID() int {
+func (tar *Tardigrade) UniqueID() int {
 	lastID := 0
-	src := getFile()
-	if !fileExists(src) {
+	src := tar.getFile()
+	if !tar.fileExists(src) {
 		return lastID
 	} else {
-		lastID, _ = strconv.Atoi(LastField("id"))
+		lastID, _ = strconv.Atoi(tar.LastField("id"))
 	}
 
 	return lastID
@@ -245,17 +253,17 @@ func UniqueID() int {
 //
 // Example:
 // specify number of fields to return FirstXFields(2)
-func FirstXFields(count int) []byte {
+func (tar *Tardigrade) FirstXFields(count int) []byte {
 
 	var allRecord []byte
 
-	src := getFile()
-	if !fileExists(src) {
+	src := tar.getFile()
+	if !tar.fileExists(src) {
 		return []byte(fmt.Sprintf("Database %s missing!", src))
 	} else {
 		fInfo, _ := os.Stat(src)
 		fsize := fInfo.Size()
-		if fsize == 0 {
+		if fsize <= 1 {
 			return []byte(fmt.Sprintf("Database %s is empty!", src))
 		} else {
 			var allRecords []MyStruct
@@ -266,7 +274,7 @@ func FirstXFields(count int) []byte {
 			end := count
 			line := ""
 
-			file, err := os.Open(getFile())
+			file, err := os.Open(src)
 			CheckError("FirstXFields(1)", err)
 
 			defer file.Close()
@@ -299,29 +307,34 @@ func FirstXFields(count int) []byte {
 //
 // Example:
 // specify number of fields to return LastXFields(2)
-func LastXFields(count int) []byte {
+func (tar *Tardigrade) LastXFields(count int) []byte {
 
 	var allRecord []byte
+	var allRecords []MyStruct
+	var lastLine, start, end = 0, 0, 0
+	line := ""
 
-	src := getFile()
-	if !fileExists(src) {
-		return []byte(fmt.Sprintf("Database %s missing!", src))
+	src := tar.getFile()
+	if !tar.fileExists(src) {
+		return []byte(fmt.Sprintf("Failed: database %s missing!", src))
 	} else {
 		fInfo, _ := os.Stat(src)
 		fsize := fInfo.Size()
-		if fsize == 0 {
-			return []byte(fmt.Sprintf("Database %s is empty!", src))
+		if fsize <= 1 {
+			return []byte(fmt.Sprintf("Failed: database %s is empty!", src))
 		} else {
-			var allRecords []MyStruct
-			count = count - 1
+			if tar.CountSize() < count {
+				count = tar.CountSize()
+				start = tar.CountSize()
+			} else if count > 1 {
+				count = count - 1
+				start = tar.CountSize() - count
+			}
 			xFields := new(MyStruct)
 			var tmpStruct MyStruct
-			lastLine := 0
-			start := CountSize() - count
-			end := CountSize()
-			line := ""
+			end = tar.CountSize()
 
-			file, err := os.Open(getFile())
+			file, err := os.Open(src)
 			CheckError("LastXFields(1)", err)
 
 			defer file.Close()
@@ -352,18 +365,18 @@ func LastXFields(count int) []byte {
 
 // FirstField returns the first entry in the database in all formats [ raw | json | id | key | value ],
 // must specify format required Example: FirstField("json")
-func FirstField(f string) string {
+func (tar *Tardigrade) FirstField(f string) string {
 
 	result := ""
 
-	src := getFile()
-	if !fileExists(src) {
-		return fmt.Sprintf("Database %s missing!", src)
+	src := tar.getFile()
+	if !tar.fileExists(src) {
+		return fmt.Sprintf("Failed: database %s missing!", src)
 	} else {
 		fInfo, _ := os.Stat(src)
 		fsize := fInfo.Size()
-		if fsize == 0 {
-			return fmt.Sprintf("Database %s is empty!", src)
+		if fsize <= 1 {
+			return fmt.Sprintf("Failed: database %s is empty!", src)
 		} else {
 			lastLine := 0
 			line := ""
@@ -407,17 +420,17 @@ func FirstField(f string) string {
 }
 
 // LastField returns the last entry of the database in all formats [ raw | json | id | key | value ] specify format required
-func LastField(f string) string {
+func (tar *Tardigrade) LastField(f string) string {
 
 	result := ""
 
-	src := getFile()
-	if !fileExists(src) {
+	src := tar.getFile()
+	if !tar.fileExists(src) {
 		return fmt.Sprintf("Database %s missing!", src)
 	} else {
 		fInfo, _ := os.Stat(src)
 		fsize := fInfo.Size()
-		if fsize == 0 {
+		if fsize <= 1 {
 			return fmt.Sprintf("Database %s is empty!", src)
 		} else {
 			lastLine := 0
@@ -431,7 +444,7 @@ func LastField(f string) string {
 
 			for sc.Scan() {
 				lastLine++
-				if lastLine == CountSize() {
+				if lastLine == tar.CountSize() {
 					line = sc.Text()
 				}
 			}

@@ -4,24 +4,26 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 )
 
 // CreatedDBCopy creates a copy of the Database and store in UserHomeDir()
-func CreatedDBCopy() (string, bool) {
-
+func (tar *Tardigrade) CreatedDBCopy() (msg string, status bool) {
+	status = true
 	dirname, err := os.UserHomeDir()
 	CheckError("CreatedDBCopy(0)", err)
 	target := "tardigradecopy.db"
 
-	src := getFile()
-	if !fileExists(src) {
-		return fmt.Sprintf("Database %s missing!", src), false
+	src := tar.getFile()
+	if !tar.fileExists(src) {
+		msg = fmt.Sprintf("Failed: database %s missing!", src)
+		return msg, false
 	}
 	fin, err := os.Open(src)
 	CheckError("CreatedDBCopy(1)", err)
 	defer fin.Close()
 
-	dst := fmt.Sprintf("%s%s%s", dirname, string(getOS()), target)
+	dst := fmt.Sprintf("%s%s%s", dirname, string(tar.getOS()), target)
 	buf := make([]byte, 1024)
 	tmp, err := os.Create(dst)
 	CheckError("CreatedDBCopy(2)", err)
@@ -32,7 +34,8 @@ buffering:
 		n, err := fin.Read(buf)
 		if err != nil && err != io.EOF {
 			CheckError("CreatedDBCopy(3)", err)
-			return "failed to create DB", false
+			msg = "Failed: buffer error failed to create database!"
+			return msg, false
 		}
 
 		if n == 0 {
@@ -43,43 +46,55 @@ buffering:
 
 		if _, err := tmp.Write(buf[:n]); err != nil {
 			CheckError("CreatedDBCopy(4)", err)
-			return "failed to create DB", false
+			msg = "Failed: permission error failed to create database!"
+			return msg, false
 		}
 	}
-	return dst, true
+	msg = fmt.Sprintf("Copy: %s", dst)
+	return msg, true
 }
 
 // CreateDB - This function will create a database file if it does not exist and return true | false
-func CreateDB() bool {
-	jsonFile := getFile()
-
-	if !fileExists(jsonFile) {
-		_, err := os.Create(jsonFile)
+func (tar *Tardigrade) CreateDB() (msg string, status bool) {
+	status = true
+	fname := tar.getFile()
+	pwd, _ := filepath.Abs(fname)
+	if !tar.fileExists(fname) {
+		_, err := os.Create(fname)
 		CheckError("CreateDB(2)", err)
-		if !fileExists(jsonFile) {
+		if !tar.fileExists(fname) {
 			CheckError("CreateDB(3)", err)
-			return false
+			status = false
+			return fmt.Sprintf("Failed: %v", pwd), status
 		}
+	} else {
+		status = false
+		return fmt.Sprintf("Exist: %v", pwd), status
 	}
-	return true
+	return fmt.Sprintf("Created: %v", pwd), status
 }
 
 // DeleteDB - WARNING - this function delete the database file return true | false
-func DeleteDB() bool {
-	jsonFile := getFile()
-
-	if fileExists(jsonFile) {
-		delete := os.Remove(jsonFile)
+func (tar *Tardigrade) DeleteDB() (msg string, status bool) {
+	fname := tar.getFile()
+	status = true
+	pwd, _ := filepath.Abs(fname)
+	if tar.fileExists(fname) {
+		delete := os.Remove(fname)
 		CheckError("DeleteDB(1)", delete)
-		if fileExists(jsonFile) {
-			return false
+		if tar.fileExists(fname) {
+			status = false
+			return fmt.Sprintf("Failed: %v", pwd), status
 		}
+	} else {
+		status = false
+		return fmt.Sprintf("Unavailable: %v", pwd), status
 	}
-	return true
+	return fmt.Sprintf("Removed: %v", pwd), status
 }
 
 // fileExists function will check if the database exists and return true / false
-func fileExists(filename string) bool {
+func (tar *Tardigrade) fileExists(filename string) bool {
 	info, err := os.Stat(filename)
 	if os.IsNotExist(err) {
 		return false
@@ -88,16 +103,22 @@ func fileExists(filename string) bool {
 }
 
 // EmptyDB function - WARNING - this will destroy the database and all data stored in it!
-func EmptyDB() bool {
+func (tar *Tardigrade) EmptyDB() (msg string, status bool) {
 
-	status := true
+	msg, status = tar.DeleteDB()
 
-	if DeleteDB() {
-		if !CreateDB() {
+	if status {
+		msg, status = tar.CreateDB()
+		if !status {
 			status = false
+			msg = "Failed: no permission to re-create!"
+			return msg, status
 		}
 	} else {
 		status = false
+		msg = "Missing: could not find database!"
+		return msg, status
 	}
-	return status
+	msg = "Empty: database now clean!"
+	return msg, status
 }
