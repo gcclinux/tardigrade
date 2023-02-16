@@ -105,10 +105,10 @@ func (tar *Tardigrade) fileExists(filename string) bool {
 // EmptyDB function - WARNING - this will destroy the database and all data stored in it!
 func (tar *Tardigrade) EmptyDB() (msg string, status bool) {
 
-	msg, status = tar.DeleteDB()
+	_, status = tar.DeleteDB()
 
 	if status {
-		msg, status = tar.CreateDB()
+		_, status = tar.CreateDB()
 		if !status {
 			status = false
 			msg = "Failed: no permission to re-create!"
