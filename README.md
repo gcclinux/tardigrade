@@ -349,9 +349,17 @@ result:
 Additon couple of informaional functions
 ```
 Example:
-	tar := Tardigrade{}
-	fmt.Println(tar.GetUpdated())
-	fmt.Println(tar.GetVersion())
+	package main
+
+	import (
+		"fmt"
+	)
+
+	func main() {
+		tar := Tardigrade{}
+		fmt.Println(tar.GetUpdated())
+		fmt.Println(tar.GetVersion())
+	}
 
 Result:
 	Wed 15 Feb 22:52:17 GMT 2023
