@@ -21,9 +21,7 @@ type MyStruct struct {
 }
 
 func (tar *Tardigrade) getOS() rune {
-
 	PATH_SEPARATOR := '/'
-
 	if runtime.GOOS == "windows" {
 		PATH_SEPARATOR = '\\'
 	} else if runtime.GOOS == "linux" {
@@ -33,16 +31,15 @@ func (tar *Tardigrade) getOS() rune {
 	} else {
 		log.Println("unknown")
 	}
-
 	return PATH_SEPARATOR
 }
 
 // AddField take in (key, sprint) (data, string) and add to tardigrade.db
 func (tar *Tardigrade) AddField(key, data string) bool {
 
-	if !tar.fileExists(tar.getFile()) {
+	if !tar.fileExists(DBFile) {
 		tar.CreateDB()
-		if !tar.fileExists(tar.getFile()) {
+		if !tar.fileExists(DBFile) {
 			return false
 		}
 	}
@@ -56,7 +53,7 @@ func (tar *Tardigrade) AddField(key, data string) bool {
 	response, err := json.Marshal(getStruct)
 	CheckError("Marshal", err)
 
-	file, err := os.OpenFile(tar.getFile(), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
+	file, err := os.OpenFile(DBFile, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	CheckError("O_APPEND", err)
 	file.Write(response)
 	file.WriteString("\n")
@@ -70,7 +67,7 @@ func (tar *Tardigrade) RemoveField(id int) (string, bool) {
 	status := true
 	msg := ""
 
-	src := tar.getFile()
+	src := DBFile
 	if !tar.fileExists(src) {
 		return (fmt.Sprintf("Database %s missing!", src)), false
 	} else {
@@ -86,7 +83,7 @@ func (tar *Tardigrade) RemoveField(id int) (string, bool) {
 				msg = line
 			} else {
 				msg = line
-				fpath := tar.getFile()
+				fpath := DBFile
 				f, err := os.Open(fpath)
 				CheckError("RemoveField(1)", err)
 
@@ -121,7 +118,7 @@ func (tar *Tardigrade) SelectByID(id int, f string) string {
 	regx := fmt.Sprintf("\"id\":%v,", id)
 
 	result := ""
-	src := tar.getFile()
+	src := DBFile
 	if !tar.fileExists(src) {
 		return (fmt.Sprintf("Database %s missing!", src))
 	} else {
@@ -150,7 +147,7 @@ func (tar *Tardigrade) SelectByID(id int, f string) string {
 				CheckError("SelectByID(2)", err)
 
 				if f == "json" {
-					out, _ := json.MarshalIndent(&s, "", "	")
+					out, _ := json.MarshalIndent(&s, "", "  ")
 					result = string(out)
 				} else if f == "value" {
 					result = string(s.Data)
@@ -173,7 +170,7 @@ func (tar *Tardigrade) SelectByID(id int, f string) string {
 func (tar *Tardigrade) ModifyField(id int, k, v string) (msg string, status bool) {
 
 	status = true
-	src := tar.getFile()
+	src := DBFile
 	before := tar.SelectByID(id, "raw")
 	if strings.Contains(before, "Record") && strings.Contains(before, "empty!") {
 		status = false
@@ -206,7 +203,7 @@ func (tar *Tardigrade) ModifyField(id int, k, v string) (msg string, status bool
 // CountSize will return number of rows in the tardigrade.db
 func (tar *Tardigrade) CountSize() int {
 
-	src := tar.getFile()
+	src := DBFile
 	f, err := os.Open(src)
 	CheckError("CountSize(1)", err)
 
@@ -244,7 +241,7 @@ func (tar *Tardigrade) CountSize() int {
 // UniqueID function returns an int for the last used UniqueID to AutoIncrement in the AddField()
 func (tar *Tardigrade) UniqueID() int {
 	lastID := 0
-	src := tar.getFile()
+	src := DBFile
 	if !tar.fileExists(src) {
 		return lastID
 	} else {
@@ -262,7 +259,7 @@ func (tar *Tardigrade) FirstXFields(count int) []byte {
 
 	var allRecord []byte
 
-	src := tar.getFile()
+	src := DBFile
 	if !tar.fileExists(src) {
 		return []byte(fmt.Sprintf("Database %s missing!", src))
 	} else {
@@ -319,7 +316,7 @@ func (tar *Tardigrade) LastXFields(count int) []byte {
 	var lastLine, start, end = 0, 0, 0
 	line := ""
 
-	src := tar.getFile()
+	src := DBFile
 	if !tar.fileExists(src) {
 		return []byte(fmt.Sprintf("Failed: database %s missing!", src))
 	} else {
@@ -377,7 +374,7 @@ func (tar *Tardigrade) FirstField(f string) string {
 
 	result := ""
 
-	src := tar.getFile()
+	src := DBFile
 	if !tar.fileExists(src) {
 		return fmt.Sprintf("Failed: database %s missing!", src)
 	} else {
@@ -407,7 +404,7 @@ func (tar *Tardigrade) FirstField(f string) string {
 			CheckError("FirstField(2)", err)
 
 			if f == "json" {
-				out, _ := json.MarshalIndent(&s, "", "	")
+				out, _ := json.MarshalIndent(&s, "", "  ")
 				result = string(out)
 			} else if f == "value" {
 				result = string(s.Data)
@@ -421,9 +418,7 @@ func (tar *Tardigrade) FirstField(f string) string {
 				result = "Invalid format provided!"
 			}
 		}
-
 	}
-
 	return result
 }
 
@@ -432,7 +427,7 @@ func (tar *Tardigrade) LastField(f string) string {
 
 	result := ""
 
-	src := tar.getFile()
+	src := DBFile
 	if !tar.fileExists(src) {
 		return fmt.Sprintf("Database %s missing!", src)
 	} else {
@@ -462,7 +457,7 @@ func (tar *Tardigrade) LastField(f string) string {
 			CheckError("LastField(2)", err)
 
 			if f == "json" {
-				out, _ := json.MarshalIndent(&s, "", "	")
+				out, _ := json.MarshalIndent(&s, "", "  ")
 				result = string(out)
 			} else if f == "value" {
 				result = string(s.Data)
@@ -476,8 +471,6 @@ func (tar *Tardigrade) LastField(f string) string {
 				result = "Invalid format provided!"
 			}
 		}
-
 	}
-
 	return result
 }

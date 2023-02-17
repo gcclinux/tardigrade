@@ -1,7 +1,7 @@
 
 ## "tardigrade" is small and simple noSQL database for small apps and easy use.
-*updated:  Wed 15 Feb 21:52:16 GMT 2023*<br>
-*release:  0.0.3*
+*updated:  Fri Feb 17 22:41:31 GMTST 2023*<br>
+*release:  0.0.5*
 
 <br>
 
@@ -362,8 +362,8 @@ Example:
 	}
 
 Result:
-	Wed 15 Feb 22:52:17 GMT 2023
-	0.0.3
+	Fri Feb 17 22:41:31 GMTST 2023
+	0.0.5
 ```
 
 
@@ -373,12 +373,10 @@ RELEASE NOTE:
 ** release 0.0.1 - Initial version
 ** release 0.0.2 - Updated README.md and corrected some issues.
 ** release 0.0.3 - Modified to use structure method
+** release 0.0.5 - External command input
 ```
 
 OUTSTANDING:
 ```
 ** Write and share some test functions
 ```
-
-
-
