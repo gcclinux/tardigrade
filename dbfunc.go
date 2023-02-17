@@ -69,7 +69,7 @@ func (tar *Tardigrade) CreateDB() (msg string, status bool) {
 		}
 	} else {
 		status = false
-		return fmt.Sprintf("Already Exist: %v", pwd), status
+		return fmt.Sprintf("Exist: %v", pwd), status
 	}
 	return fmt.Sprintf("Created: %v", pwd), status
 }
@@ -104,9 +104,7 @@ func (tar *Tardigrade) fileExists(filename string) bool {
 
 // EmptyDB function - WARNING - this will destroy the database and all data stored in it!
 func (tar *Tardigrade) EmptyDB() (msg string, status bool) {
-
 	_, status = tar.DeleteDB()
-
 	if status {
 		_, status = tar.CreateDB()
 		if !status {
