@@ -2,7 +2,7 @@ package main
 
 const DBFile = "tardigrade.db"
 const Release = "0.0.5"
-const Updated = "Fri Feb 17 22:41:31 GMTST 2023"
+const Updated = "Sat Feb 18 18:07:28 GMTST 2023"
 
 // Tardigrade is the main structure
 type Tardigrade struct{}
