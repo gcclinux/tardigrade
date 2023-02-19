@@ -171,33 +171,38 @@ func (tar *Tardigrade) ModifyField(id int, k, v string) (msg string, status bool
 
 	status = true
 	src := DBFile
-	before := tar.SelectByID(id, "raw")
-	if strings.Contains(before, "Record") && strings.Contains(before, "empty!") {
-		status = false
-		return before, status
-	}
-	var s MyStruct
-	s.Id = id
-	s.Key = k
-	s.Data = v
-	out, _ := json.Marshal(&s)
-	after := string(out)
+	if !tar.fileExists(src) {
+		return (fmt.Sprintf("Database %s missing!", src)), status
+	} else {
 
-	input, err := os.ReadFile(src)
-	CheckError("ModifyField(1)", err)
-	lines := strings.Split(string(input), "\n")
-
-	for i, line := range lines {
-		if strings.Contains(line, before) {
-			lines[i] = after
+		before := tar.SelectByID(id, "raw")
+		if strings.Contains(before, "Record") && strings.Contains(before, "empty!") {
+			status = false
+			return before, status
 		}
-	}
-	output := strings.Join(lines, "\n")
-	err = os.WriteFile(src, []byte(output), 0644)
-	CheckError("ModifyField(2)", err)
+		var s MyStruct
+		s.Id = id
+		s.Key = k
+		s.Data = v
+		out, _ := json.Marshal(&s)
+		after := string(out)
 
-	msg = tar.SelectByID(id, "raw")
-	return msg, status
+		input, err := os.ReadFile(src)
+		CheckError("ModifyField(1)", err)
+		lines := strings.Split(string(input), "\n")
+
+		for i, line := range lines {
+			if strings.Contains(line, before) {
+				lines[i] = after
+			}
+		}
+		output := strings.Join(lines, "\n")
+		err = os.WriteFile(src, []byte(output), 0644)
+		CheckError("ModifyField(2)", err)
+
+		msg = tar.SelectByID(id, "raw")
+		return msg, status
+	}
 }
 
 // CountSize will return number of rows in the tardigrade.db

@@ -56,6 +56,15 @@ func main() {
 			} else if os.Args[1] == "-selectlx" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -selectlx \"amount\"")
+			} else if os.Args[1] == "-change" {
+				fmt.Println()
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -change \"id\" \"key data\" \"value date\"")
+			} else if os.Args[1] == "-deletef" {
+				fmt.Println()
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -deletef \"amount\"")
+			} else {
+				fmt.Println()
+				fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
 			}
 		} else if size == 3 {
 			if os.Args[1] == "-createdb" {
@@ -119,6 +128,20 @@ func main() {
 				} else {
 					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> tardigrade -selectlx \"number\"")
 				}
+			} else if os.Args[1] == "-change" {
+				fmt.Println()
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -change \"id\" \"key data\" \"value date\"")
+			} else if os.Args[1] == "-deletef" {
+				fmt.Println()
+				if x, err := strconv.Atoi(os.Args[2]); err == nil {
+					msg, status := tar.RemoveField(x)
+					fmt.Println(msg, status)
+				} else {
+					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> tardigrade -deletef \"number\"")
+				}
+			} else {
+				fmt.Println()
+				fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
 			}
 		} else if size == 4 {
 			if os.Args[1] == "-createdb" {
@@ -149,8 +172,30 @@ func main() {
 			} else if os.Args[1] == "-selectlx" {
 				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -selectlx \"amount\"")
+				fmt.Println()
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -change \"id\" \"key data\" \"value date\"")
+			} else if os.Args[1] == "-deletef" {
+				fmt.Println()
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -deletef \"amount\"")
+			} else {
+				fmt.Println()
+				fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
 			}
 		} else if size == 5 {
+			if os.Args[1] == "-change" {
+				fmt.Println()
+				if x, err := strconv.Atoi(os.Args[2]); err == nil {
+					change, status := tar.ModifyField(x, os.Args[3], os.Args[4])
+					fmt.Println(change, status)
+				} else {
+					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> tardigrade -selectfx \"number\"")
+				}
+				fmt.Println()
+			} else {
+				fmt.Println()
+				fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
+			}
+		} else if size == 6 {
 			fmt.Println()
 			fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
 		}

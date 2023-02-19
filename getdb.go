@@ -1,17 +1,11 @@
 package main
 
 const DBFile = "tardigrade.db"
-const Release = "0.0.5"
-const Updated = "Sat Feb 18 18:07:28 GMTST 2023"
+const Release = "0.1.0"
+const Updated = "Sun 19 Feb 14:40:57 GMT 2023"
 
 // Tardigrade is the main structure
 type Tardigrade struct{}
-
-type config struct {
-	DBFile  string
-	Release string
-	Updated string
-}
 
 // GetVersion function returns the current release version
 func (tar *Tardigrade) GetVersion() (release string) {
