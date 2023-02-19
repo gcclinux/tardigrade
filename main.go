@@ -1,5 +1,7 @@
 package main
 
+// Built Sun 19 Feb 20:40:57 GMT 2023
+
 import (
 	"encoding/json"
 	"fmt"
@@ -62,6 +64,21 @@ func main() {
 			} else if os.Args[1] == "-deletef" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -deletef \"amount\"")
+			} else if os.Args[1] == "-help" {
+				fmt.Println(`
+-createdb		"CREATE new database"
+-copydb 		"CREATE backup (copy) the database"
+-deletedb 		"DELETE database"
+-deletef 		"DELETE single row from database"
+-insert 		"INSERT new row into the database"
+-change 		"CHANGE existing row in the dtabase"
+-selectf 		"SELECT FIRST row from database"
+-selectfx 		"SELECT FIRST X of rows from database"
+-selecti 		"SELECT specific row from database"
+-selectl 		"SELECT LAST row from database"
+-selectlx 		"SELECT LAST X of rows from database"
+-total 			"SHOW number of entries"`)
+				fmt.Println()
 			} else {
 				fmt.Println()
 				fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
@@ -71,6 +88,8 @@ func main() {
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> tardigrade -createdb")
 			} else if os.Args[1] == "-copydb" {
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> tardigrade -copydb")
+			} else if os.Args[1] == "-help" {
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> tardigrade -help")
 			} else if os.Args[1] == "-deletedb" {
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> tardigrade -deletedb")
 			} else if os.Args[1] == "-insert" {
@@ -148,6 +167,8 @@ func main() {
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -createdb")
 			} else if os.Args[1] == "-copydb" {
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -copydb")
+			} else if os.Args[1] == "-help" {
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -help")
 			} else if os.Args[1] == "-deletedb" {
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -deletedb")
 			} else if os.Args[1] == "-insert" {

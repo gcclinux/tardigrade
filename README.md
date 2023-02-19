@@ -1,7 +1,6 @@
-
-## "tardigrade" is small and simple no-SQL database app & mod for GO.
-*updated:  Sun 19 Feb 2023 15:15:12 GMT*<br>
-*release:  0.1.0*
+## "tardigrade" is small and simple no-SQL database for small apps and easy use.
+*updated:  Sun 19 Feb 20:40:57 GMT 2023*<br>
+*release:  0.1.1*
 
 <br>
 
@@ -12,11 +11,11 @@
 >go get [https://github.com/gcclinux/tardigrade-mod](https://github.com/gcclinux/tardigrade-mod)
 
 ## Getting started with ready compiled binary
->Download [https://github.com/gcclinux/tardigrade/tree/main/bin](https://github.com/gcclinux/tardigrade/tree/main/bin) 
+> 
 
 <BR>
 
-Current structure and available functions() through the MOD
+Current structure and available functions()
 
 ```
  -createdb		"CREATE a new database"
@@ -34,7 +33,7 @@ Current structure and available functions() through the MOD
 ```
 
 
-# HOW-TO-USE STANDALONE BINARY
+# HOW-TO-USE
 
 <BR>
 
