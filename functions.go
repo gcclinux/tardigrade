@@ -1,6 +1,6 @@
 package main
 
-// Built Sun 19 Feb 20:40:57 GMT 2023
+// Built Tue 21 Feb 22:05:28 GMT 2023
 
 import (
 	"bufio"
@@ -259,21 +259,20 @@ func (tar *Tardigrade) UniqueID() int {
 }
 
 // FirstXFields returns first X number of entries from database in byte[] format
-//
-// Example:
-// specify number of fields to return FirstXFields(2)
-func (tar *Tardigrade) FirstXFields(count int) []byte {
+// Example: (0.1.2)
+// specify number of fields X and format [ raw | json | id | key | value ] to return FirstXFields(2)
+func (tar *Tardigrade) FirstXFields(count int, format string) (string, []byte) {
 
 	var allRecord []byte
 
 	src := DBFile
 	if !tar.fileExists(src) {
-		return []byte(fmt.Sprintf("Database %s missing!", src))
+		return format, []byte(fmt.Sprintf("Database %s missing!", src))
 	} else {
 		fInfo, _ := os.Stat(src)
 		fsize := fInfo.Size()
 		if fsize <= 1 {
-			return []byte(fmt.Sprintf("Database %s is empty!", src))
+			return format, []byte(fmt.Sprintf("Database %s is empty!", src))
 		} else {
 			var allRecords []MyStruct
 			xFields := new(MyStruct)
@@ -309,14 +308,14 @@ func (tar *Tardigrade) FirstXFields(count int) []byte {
 			CheckError("FirstXFields(3)", err)
 		}
 	}
-	return allRecord
+	return format, allRecord
 }
 
 // LastXFields returns last X numbers of entries from db in byte[] format
 //
 // Example:
 // specify number of fields to return LastXFields(2)
-func (tar *Tardigrade) LastXFields(count int) []byte {
+func (tar *Tardigrade) LastXFields(count int, format string) (string, []byte) {
 
 	var allRecord []byte
 	var allRecords []MyStruct
@@ -325,12 +324,12 @@ func (tar *Tardigrade) LastXFields(count int) []byte {
 
 	src := DBFile
 	if !tar.fileExists(src) {
-		return []byte(fmt.Sprintf("Failed: database %s missing!", src))
+		return format, []byte(fmt.Sprintf("Failed: database %s missing!", src))
 	} else {
 		fInfo, _ := os.Stat(src)
 		fsize := fInfo.Size()
 		if fsize <= 1 {
-			return []byte(fmt.Sprintf("Failed: database %s is empty!", src))
+			return format, []byte(fmt.Sprintf("Failed: database %s is empty!", src))
 		} else {
 			if tar.CountSize() < count {
 				count = tar.CountSize()
@@ -372,7 +371,7 @@ func (tar *Tardigrade) LastXFields(count int) []byte {
 			CheckError("LastXFields(3)", err)
 		}
 	}
-	return allRecord
+	return format, allRecord
 }
 
 // FirstField returns the first entry in the database in all formats [ raw | json | id | key | value ],

@@ -1,6 +1,6 @@
 ## "tardigrade" is small and simple no-SQL database for small apps and easy use.
-*updated:  Sun 19 Feb 20:40:57 GMT 2023*<br>
-*release:  0.1.1*
+*updated:  Tue 21 Feb 22:05:28 GMT 2023*<br>
+*release:  0.1.2*
 
 <br>
 
@@ -18,18 +18,19 @@
 Current structure and available functions()
 
 ```
- -createdb		"CREATE a new database"
- -copydb 		"CREATE a backup / copy of main database"
- -deletedb 		"DELETE main database"
- -deletef 		"DELETE a single row / field from database"
- -insert 		"INSERT new row / field into the database"
- -change 		"CHANGE existing row / field in the dtabase"
- -selectf 		"SELECT FIRST row / field from database"
- -selectfx 		"SELECT FIRST X of rows / fields from database"
- -selecti 		"SELECT specific row / field from database"
- -selectl 		"SELECT LAST row / field from database"
- -selectlx 		"SELECT LAST X of rows / fields from database"
- -total 		"SHOW number of entries"
+-createdb               "CREATE new database"
+-copydb                 "CREATE backup (copy) of the database"
+-deletedb               "DELETE database"
+-deletef                "DELETE <id> specific row from database"
+-insert                 "INSERT <field one> <field two> for new entry"
+-change                 "CHANGE <id> <field one> <field two> on existing row "
+-selectf                "SELECT <format> TOP row from database "
+-selectl                "SELECT <format> LAST row from database"
+-selectfx               "SELECT <number> <format> TOP rows from database"
+-selectlx               "SELECT <number> <format> LAST rows from database"
+-selecti                "SELECT <id> specific row from database"
+-total                  "SHOW number of entries in database"
+-version                "SHOW built date & version
 ```
 
 
@@ -110,7 +111,7 @@ Example:
 
 ```
 Example:
-	bin/tardigrade-linux-x86_64 -selectfx "id"
+	bin/tardigrade-linux-x86_64 -selectfx "id" "format"
 ```
 
 **LastXFields returns last X number of entries from db in values byte[] format**
@@ -118,7 +119,7 @@ Example:
 
 ```
 Example:
-	bin/tardigrade-linux-x86_64 -selectlx "id"
+	bin/tardigrade-linux-x86_64 -selectlx "id" "format"
 ```
 
 **RemoveField function takes an unique field id as an input and remove the matching field entry**
@@ -146,6 +147,8 @@ RELEASE NOTE:
 ** release 0.0.3 - Modified to use structure method
 ** release 0.0.5 - External command input
 ** release 0.1.0 - Build the first binary
+** release 0.1.1 - Fixed some issues
+** release 0.1.2 - Added version for format to selectfx & selectlx
 ```
 
 OUTSTANDING:

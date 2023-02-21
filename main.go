@@ -1,6 +1,6 @@
 package main
 
-// Built Sun 19 Feb 20:40:57 GMT 2023
+// Built Tue 21 Feb 22:05:28 GMT 2023
 
 import (
 	"encoding/json"
@@ -28,6 +28,11 @@ func main() {
 				msg, status := tar.CreateDB()
 				fmt.Println()
 				fmt.Println(msg, "(", status, ")")
+			} else if os.Args[1] == "-version" {
+				fmt.Println()
+				vr := tar.GetVersion()
+				dt := tar.GetUpdated()
+				fmt.Println(dt, "(", vr, ")")
 			} else if os.Args[1] == "-copydb" {
 				fmt.Println()
 				msg, status := tar.CreatedDBCopy()
@@ -54,30 +59,31 @@ func main() {
 				fmt.Println("(", msg, ")")
 			} else if os.Args[1] == "-selectfx" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -selectfx \"amount\"")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -selectfx \"amount\" \"format\" (raw|json|key|value)")
 			} else if os.Args[1] == "-selectlx" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -selectlx \"amount\"")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -selectlx \"amount\" \"format\" (raw|json|key|value)")
 			} else if os.Args[1] == "-change" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -change \"id\" \"key data\" \"value date\"")
 			} else if os.Args[1] == "-deletef" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -deletef \"amount\"")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -deletef \"id\"")
 			} else if os.Args[1] == "-help" {
 				fmt.Println(`
 -createdb		"CREATE new database"
--copydb 		"CREATE backup (copy) the database"
+-copydb 		"CREATE backup (copy) of the database"
 -deletedb 		"DELETE database"
--deletef 		"DELETE single row from database"
--insert 		"INSERT new row into the database"
--change 		"CHANGE existing row in the dtabase"
--selectf 		"SELECT FIRST row from database"
--selectfx 		"SELECT FIRST X of rows from database"
--selecti 		"SELECT specific row from database"
--selectl 		"SELECT LAST row from database"
--selectlx 		"SELECT LAST X of rows from database"
--total 			"SHOW number of entries"`)
+-deletef 		"DELETE <id> specific row from database"
+-insert 		"INSERT <field one> <field two> for new entry"
+-change 		"CHANGE <id> <field one> <field two> on existing row "
+-selectf 		"SELECT <format> TOP row from database "
+-selectl 		"SELECT <format> LAST row from database"
+-selectfx 		"SELECT <number> <format> TOP rows from database"
+-selectlx 		"SELECT <number> <format> LAST rows from database"
+-selecti 		"SELECT <id> specific row from database"
+-total 			"SHOW number of entries in database"
+-version		"SHOW built date & version`)
 				fmt.Println()
 			} else {
 				fmt.Println()
@@ -86,6 +92,8 @@ func main() {
 		} else if size == 3 {
 			if os.Args[1] == "-createdb" {
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> tardigrade -createdb")
+			} else if os.Args[1] == "-version" {
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> tardigrade -version")
 			} else if os.Args[1] == "-copydb" {
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> tardigrade -copydb")
 			} else if os.Args[1] == "-help" {
@@ -106,47 +114,9 @@ func main() {
 			} else if os.Args[1] == "-total" {
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> tardigrade -total")
 			} else if os.Args[1] == "-selectfx" {
-				if x, err := strconv.Atoi(os.Args[2]); err == nil {
-					fmt.Println()
-					var received = tar.FirstXFields(x)
-
-					bytes := received
-					var data []MyStruct
-					size := len(data)
-					json.Unmarshal(bytes, &data)
-
-					if size == 1 {
-						fmt.Printf("id: %v, key: %v, data: %s", data[0].Id, data[0].Key, data[0].Data)
-					} else {
-						for x := range data {
-							fmt.Printf("id: %v, key: %v, data: %s", data[x].Id, data[x].Key, data[x].Data)
-							fmt.Println()
-						}
-					}
-				} else {
-					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> tardigrade -selectfx \"number\"")
-				}
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -selectfx \"amount\" \"format\" (raw|json|key|value)")
 			} else if os.Args[1] == "-selectlx" {
-				if x, err := strconv.Atoi(os.Args[2]); err == nil {
-					fmt.Println()
-					var received = tar.LastXFields(x)
-
-					bytes := received
-					var data []MyStruct
-					size := len(data)
-					json.Unmarshal(bytes, &data)
-
-					if size == 1 {
-						fmt.Printf("id: %v, key: %v, data: %s", data[0].Id, data[0].Key, data[0].Data)
-					} else {
-						for x := range data {
-							fmt.Printf("id: %v, key: %v, data: %s", data[x].Id, data[x].Key, data[x].Data)
-							fmt.Println()
-						}
-					}
-				} else {
-					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> tardigrade -selectlx \"number\"")
-				}
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -selectlx \"amount\" \"format\" (raw|json|key|value)")
 			} else if os.Args[1] == "-change" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -change \"id\" \"key data\" \"value date\"")
@@ -167,6 +137,8 @@ func main() {
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -createdb")
 			} else if os.Args[1] == "-copydb" {
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -copydb")
+			} else if os.Args[1] == "-version" {
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -version")
 			} else if os.Args[1] == "-help" {
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -help")
 			} else if os.Args[1] == "-deletedb" {
@@ -188,13 +160,66 @@ func main() {
 			} else if os.Args[1] == "-total" {
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -total")
 			} else if os.Args[1] == "-selectfx" {
-				fmt.Println()
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -selectfx \"amount\"")
+				format := os.Args[3]
+				if x, err := strconv.Atoi(os.Args[2]); err == nil {
+					fmt.Println()
+					var format, received = tar.FirstXFields(x, format)
+					bytes := received
+					var data []MyStruct
+					json.Unmarshal(bytes, &data)
+					for x := range data {
+						if format == "json" {
+							out, _ := json.MarshalIndent(&data[x], "", "  ")
+							fmt.Printf(string(out))
+							fmt.Println()
+						} else if format == "value" {
+							fmt.Printf(string(data[x].Data))
+							fmt.Println()
+						} else if format == "raw" {
+							fmt.Printf("id: %d, key: %v, data: %s\n", data[x].Id, data[x].Key, data[x].Data)
+						} else if format == "key" {
+							fmt.Printf("%v\n", data[x].Key)
+						} else if format == "id" {
+							fmt.Printf(strconv.Itoa(data[x].Id))
+							fmt.Println()
+						} else {
+							fmt.Printf("Invalid format provided!")
+						}
+					}
+				} else {
+					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> tardigrade -selectfx \"number\" \"format\" (raw|json|key|value)")
+				}
 			} else if os.Args[1] == "-selectlx" {
-				fmt.Println()
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -selectlx \"amount\"")
-				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -change \"id\" \"key data\" \"value date\"")
+				format := os.Args[3]
+				if x, err := strconv.Atoi(os.Args[2]); err == nil {
+					fmt.Println()
+					var format, received = tar.LastXFields(x, format)
+
+					bytes := received
+					var data []MyStruct
+					json.Unmarshal(bytes, &data)
+					for x := range data {
+						if format == "json" {
+							out, _ := json.MarshalIndent(&data[x], "", "  ")
+							fmt.Printf(string(out))
+							fmt.Println()
+						} else if format == "value" {
+							fmt.Printf(string(data[x].Data))
+							fmt.Println()
+						} else if format == "raw" {
+							fmt.Printf("id: %d, key: %v, data: %s\n", data[x].Id, data[x].Key, data[x].Data)
+						} else if format == "key" {
+							fmt.Printf("%v\n", data[x].Key)
+						} else if format == "id" {
+							fmt.Printf(strconv.Itoa(data[x].Id))
+							fmt.Println()
+						} else {
+							fmt.Printf("Invalid format provided!")
+						}
+					}
+				} else {
+					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> tardigrade -selectlx \"number\" \"format\" (raw|json|key|value)")
+				}
 			} else if os.Args[1] == "-deletef" {
 				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -deletef \"amount\"")
