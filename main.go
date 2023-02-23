@@ -173,14 +173,14 @@ func main() {
 							fmt.Printf(string(out))
 							fmt.Println()
 						} else if format == "value" {
-							fmt.Printf(string(data[x].Data))
+							fmt.Println(string(data[x].Data))
 							fmt.Println()
 						} else if format == "raw" {
 							fmt.Printf("id: %d, key: %v, data: %s\n", data[x].Id, data[x].Key, data[x].Data)
 						} else if format == "key" {
 							fmt.Printf("%v\n", data[x].Key)
 						} else if format == "id" {
-							fmt.Printf(strconv.Itoa(data[x].Id))
+							fmt.Println(strconv.Itoa(data[x].Id))
 							fmt.Println()
 						} else {
 							fmt.Printf("Invalid format provided!")
@@ -204,14 +204,14 @@ func main() {
 							fmt.Printf(string(out))
 							fmt.Println()
 						} else if format == "value" {
-							fmt.Printf(string(data[x].Data))
+							fmt.Println(string(data[x].Data))
 							fmt.Println()
 						} else if format == "raw" {
 							fmt.Printf("id: %d, key: %v, data: %s\n", data[x].Id, data[x].Key, data[x].Data)
 						} else if format == "key" {
 							fmt.Printf("%v\n", data[x].Key)
 						} else if format == "id" {
-							fmt.Printf(strconv.Itoa(data[x].Id))
+							fmt.Println(strconv.Itoa(data[x].Id))
 							fmt.Println()
 						} else {
 							fmt.Printf("Invalid format provided!")

@@ -480,3 +480,62 @@ func (tar *Tardigrade) LastField(f string) string {
 	}
 	return result
 }
+
+// SelectSearch function takes in a string in a single or multiple words and format type it returns the format [ raw | json | id | key | value ] and []bytes array with result
+func (tar *Tardigrade) SelectSearch(search, format string) (string, []byte) {
+
+	/*
+		search := "test1,test2,test3,test4,test5,test6"
+		split := strings.Split(search, ",")
+		size := len(split)
+
+		for i := 0; i < size; i++ {
+			fmt.Println(split[i])
+		}
+	*/
+
+	var allRecord []byte
+
+	src := DBFile
+	if !tar.fileExists(src) {
+		return format, []byte(fmt.Sprintf("Database %s missing!", src))
+	} else {
+		fInfo, _ := os.Stat(src)
+		fsize := fInfo.Size()
+		if fsize <= 1 {
+			return format, []byte(fmt.Sprintf("Database %s is empty!", src))
+		} else {
+			//size := strings.Split(search, ",")
+
+			var allRecords []MyStruct
+			xFields := new(MyStruct)
+			var tmpStruct MyStruct
+			line := ""
+
+			file, err := os.Open(src)
+			CheckError("SelectSearch(1)", err)
+
+			defer file.Close()
+			var r io.Reader = file
+			sc := bufio.NewScanner(r)
+
+			for sc.Scan() {
+				line = sc.Text()
+				//if strings.Contains(line, "Record") && strings.Contains(line, "empty")
+				in := []byte(line)
+
+				err = json.Unmarshal(in, &tmpStruct)
+				CheckError("SelectSearch(2)", err)
+
+				xFields.Id = tmpStruct.Id
+				xFields.Key = string(tmpStruct.Key)
+				xFields.Data = string(tmpStruct.Data)
+				allRecords = append(allRecords, *xFields)
+			}
+			allRecord, err = json.Marshal(allRecords)
+			CheckError("SelectSearch(3)", err)
+		}
+	}
+	return format, allRecord
+
+}
