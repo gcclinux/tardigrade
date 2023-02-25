@@ -1,25 +1,25 @@
 package main
 
-// Built Tue 21 Feb 22:05:28 GMT 2023
+// Built Sat 25 Feb 16:15:57 GMT 2023
 
 import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 // Starting to create an example how to parse external arguments or flags:
 // Build a binary before using it: $ go build -o tardigrade *.go && ./tardigrade -createdb
-
-// TOBE Continued!
 
 func main() {
 
 	tar := Tardigrade{}
 
 	if len(os.Args) == 1 {
-		fmt.Println("No arguments parsed! Try: tardigrade -help")
+		fmt.Println("No arguments parsed! Try: ", filepath.Base(os.Args[0]), " -help")
 	} else {
 		size := len(os.Args)
 		if size == 2 {
@@ -43,45 +43,49 @@ func main() {
 				fmt.Println(msg, "(", status, ")")
 			} else if os.Args[1] == "-insert" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -insert \"key filed details\" \"data field details\"")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -insert \"key filed details\" \"data field details\"")
 			} else if os.Args[1] == "-selectf" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -selectf \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -selectf \"format\" (raw|json|key|value)")
 			} else if os.Args[1] == "-selectl" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -selectl \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -selectl \"format\" (raw|json|key|value)")
 			} else if os.Args[1] == "-selecti" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -selecti \"id\" \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -selecti \"id\" \"format\" (raw|json|key|value)")
 			} else if os.Args[1] == "-total" {
 				fmt.Println()
 				msg := tar.CountSize()
 				fmt.Println("(", msg, ")")
 			} else if os.Args[1] == "-selectfx" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -selectfx \"amount\" \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -selectfx \"amount\" \"format\" (raw|json|key|value)")
 			} else if os.Args[1] == "-selectlx" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -selectlx \"amount\" \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -selectlx \"amount\" \"format\" (raw|json|key|value)")
+			} else if os.Args[1] == "-search" {
+				fmt.Println()
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -search \"word(s)\" \"format\" (raw|json|key|value)")
 			} else if os.Args[1] == "-change" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -change \"id\" \"key data\" \"value date\"")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -change \"id\" \"key data\" \"value date\"")
 			} else if os.Args[1] == "-deletef" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -deletef \"id\"")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -deletef \"id\"")
 			} else if os.Args[1] == "-help" {
 				fmt.Println(`
 -createdb		"CREATE new database"
 -copydb 		"CREATE backup (copy) of the database"
 -deletedb 		"DELETE database"
 -deletef 		"DELETE <id> specific row from database"
--insert 		"INSERT <field one> <field two> for new entry"
--change 		"CHANGE <id> <field one> <field two> on existing row "
+-search 		"SEARCH <Word(s)> <format> match all words and return results"
 -selectf 		"SELECT <format> TOP row from database "
 -selectl 		"SELECT <format> LAST row from database"
 -selectfx 		"SELECT <number> <format> TOP rows from database"
 -selectlx 		"SELECT <number> <format> LAST rows from database"
--selecti 		"SELECT <id> specific row from database"
+-selecti 		"SELECT <id> <format> return specific row from database"
+-insert 		"INSERT <field one> <field two> for new entry"
+-change 		"CHANGE <id> <field one> <field two> on existing row "
 -total 			"SHOW number of entries in database"
 -version		"SHOW built date & version`)
 				fmt.Println()
@@ -91,17 +95,17 @@ func main() {
 			}
 		} else if size == 3 {
 			if os.Args[1] == "-createdb" {
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> tardigrade -createdb")
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " -createdb")
 			} else if os.Args[1] == "-version" {
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> tardigrade -version")
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " -version")
 			} else if os.Args[1] == "-copydb" {
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> tardigrade -copydb")
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " -copydb")
 			} else if os.Args[1] == "-help" {
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> tardigrade -help")
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " -help")
 			} else if os.Args[1] == "-deletedb" {
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> tardigrade -deletedb")
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " -deletedb")
 			} else if os.Args[1] == "-insert" {
-				fmt.Println("ERROR - MISSING ARGUMENTS:", os.Args[1], "\n\n>> tardigrade -insert \"key filed details\" \"data field details\"")
+				fmt.Println("ERROR - MISSING ARGUMENTS:", os.Args[1], "\n\n>> ", filepath.Base(os.Args[0]), " -insert \"key filed details\" \"data field details\"")
 			} else if os.Args[1] == "-selectf" {
 				fmt.Println()
 				fmt.Println(tar.FirstField(os.Args[2]))
@@ -110,23 +114,26 @@ func main() {
 				fmt.Println(tar.LastField(os.Args[2]))
 			} else if os.Args[1] == "-selecti" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -selecti \"id\" \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -selecti \"id\" \"format\" (raw|json|key|value)")
 			} else if os.Args[1] == "-total" {
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> tardigrade -total")
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " -total")
 			} else if os.Args[1] == "-selectfx" {
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -selectfx \"amount\" \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -selectfx \"amount\" \"format\" (raw|json|key|value)")
 			} else if os.Args[1] == "-selectlx" {
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -selectlx \"amount\" \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -selectlx \"amount\" \"format\" (raw|json|key|value)")
+			} else if os.Args[1] == "-search" {
+				fmt.Println()
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -search \"word(s)\" \"format\" (raw|json|key|value)")
 			} else if os.Args[1] == "-change" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> tardigrade -change \"id\" \"key data\" \"value date\"")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -change \"id\" \"key data\" \"value date\"")
 			} else if os.Args[1] == "-deletef" {
 				fmt.Println()
 				if x, err := strconv.Atoi(os.Args[2]); err == nil {
 					msg, status := tar.RemoveField(x)
 					fmt.Println(msg, status)
 				} else {
-					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> tardigrade -deletef \"number\"")
+					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> ", filepath.Base(os.Args[0]), " -deletef \"number\"")
 				}
 			} else {
 				fmt.Println()
@@ -134,31 +141,63 @@ func main() {
 			}
 		} else if size == 4 {
 			if os.Args[1] == "-createdb" {
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -createdb")
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -createdb")
 			} else if os.Args[1] == "-copydb" {
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -copydb")
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -copydb")
 			} else if os.Args[1] == "-version" {
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -version")
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -version")
 			} else if os.Args[1] == "-help" {
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -help")
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -help")
 			} else if os.Args[1] == "-deletedb" {
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -deletedb")
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -deletedb")
 			} else if os.Args[1] == "-insert" {
 				fmt.Println()
 				status := tar.AddField(os.Args[2], os.Args[3])
 				fmt.Println("returned: (", status, ")")
 			} else if os.Args[1] == "-selectf" {
 				fmt.Println()
-				fmt.Println("ERROR - REMOVE:", os.Args[3], "\n\n>> tardigrade -selectf \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - REMOVE:", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -selectf \"format\" (raw|json|key|value)")
 			} else if os.Args[1] == "-selectl" {
 				fmt.Println()
-				fmt.Println("ERROR - REMOVE:", os.Args[3], "\n\n>> tardigrade -selectl \"format\" (raw|json|key|value)")
-			} else if os.Args[1] == "-select" {
+				fmt.Println("ERROR - REMOVE:", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -selectl \"format\" (raw|json|key|value)")
+			} else if os.Args[1] == "-selecti" {
 				fmt.Println()
 				id, _ := strconv.Atoi(os.Args[2])
-				fmt.Println(tar.SelectByID(id, os.Args[3]))
+				format := os.Args[3]
+				fmt.Println(tar.SelectByID(id, format))
 			} else if os.Args[1] == "-total" {
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -total")
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -total")
+			} else if os.Args[1] == "-search" {
+				fmt.Println()
+				var format, received = tar.SelectSearch(os.Args[2], os.Args[3])
+				bytes := received
+				var data []MyStruct
+				json.Unmarshal(bytes, &data)
+
+				if (strings.Contains(string(received), "Database") && strings.Contains(string(received), "missing")) || (strings.Contains(string(received), "Database") && strings.Contains(string(received), "empty")) {
+					fmt.Println(string(received))
+					fmt.Println()
+				}
+
+				for x := range data {
+					if format == "json" {
+						out, _ := json.MarshalIndent(&data[x], "", "  ")
+						fmt.Printf("%v", string(out))
+						fmt.Println()
+					} else if format == "value" {
+						fmt.Println(string(data[x].Data))
+						fmt.Println()
+					} else if format == "raw" {
+						fmt.Printf("id: %d, key: %v, data: %s\n", data[x].Id, data[x].Key, data[x].Data)
+					} else if format == "key" {
+						fmt.Printf("%v\n", data[x].Key)
+					} else if format == "id" {
+						fmt.Println(strconv.Itoa(data[x].Id))
+						fmt.Println()
+					} else {
+						fmt.Printf("Invalid format provided!")
+					}
+				}
 			} else if os.Args[1] == "-selectfx" {
 				format := os.Args[3]
 				if x, err := strconv.Atoi(os.Args[2]); err == nil {
@@ -167,10 +206,14 @@ func main() {
 					bytes := received
 					var data []MyStruct
 					json.Unmarshal(bytes, &data)
+					if (strings.Contains(string(received), "Database") && strings.Contains(string(received), "missing")) || (strings.Contains(string(received), "Database") && strings.Contains(string(received), "empty")) {
+						fmt.Println(string(received))
+						fmt.Println()
+					}
 					for x := range data {
 						if format == "json" {
 							out, _ := json.MarshalIndent(&data[x], "", "  ")
-							fmt.Printf(string(out))
+							fmt.Printf("%v", string(out))
 							fmt.Println()
 						} else if format == "value" {
 							fmt.Println(string(data[x].Data))
@@ -187,7 +230,7 @@ func main() {
 						}
 					}
 				} else {
-					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> tardigrade -selectfx \"number\" \"format\" (raw|json|key|value)")
+					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> ", filepath.Base(os.Args[0]), " -selectfx \"number\" \"format\" (raw|json|key|value)")
 				}
 			} else if os.Args[1] == "-selectlx" {
 				format := os.Args[3]
@@ -198,10 +241,14 @@ func main() {
 					bytes := received
 					var data []MyStruct
 					json.Unmarshal(bytes, &data)
+					if (strings.Contains(string(received), "Database") && strings.Contains(string(received), "missing")) || (strings.Contains(string(received), "Database") && strings.Contains(string(received), "empty")) {
+						fmt.Println(string(received))
+						fmt.Println()
+					}
 					for x := range data {
 						if format == "json" {
 							out, _ := json.MarshalIndent(&data[x], "", "  ")
-							fmt.Printf(string(out))
+							fmt.Printf("%v", string(out))
 							fmt.Println()
 						} else if format == "value" {
 							fmt.Println(string(data[x].Data))
@@ -218,11 +265,11 @@ func main() {
 						}
 					}
 				} else {
-					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> tardigrade -selectlx \"number\" \"format\" (raw|json|key|value)")
+					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> ", filepath.Base(os.Args[0]), " -selectlx \"number\" \"format\" (raw|json|key|value)")
 				}
 			} else if os.Args[1] == "-deletef" {
 				fmt.Println()
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> tardigrade -deletef \"amount\"")
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -deletef \"amount\"")
 			} else {
 				fmt.Println()
 				fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
@@ -234,7 +281,7 @@ func main() {
 					change, status := tar.ModifyField(x, os.Args[3], os.Args[4])
 					fmt.Println(change, status)
 				} else {
-					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> tardigrade -selectfx \"number\"")
+					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> ", filepath.Base(os.Args[0]), " -selectfx \"number\"")
 				}
 				fmt.Println()
 			} else {

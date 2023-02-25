@@ -1,6 +1,6 @@
 package main
 
-// Built Tue 21 Feb 22:05:28 GMT 2023
+// Built Sat 25 Feb 16:15:57 GMT 2023
 
 import (
 	"bufio"
@@ -318,32 +318,34 @@ func (tar *Tardigrade) FirstXFields(count int, format string) (string, []byte) {
 func (tar *Tardigrade) LastXFields(count int, format string) (string, []byte) {
 
 	var allRecord []byte
-	var allRecords []MyStruct
-	var lastLine, start, end = 0, 0, 0
-	line := ""
 
 	src := DBFile
 	if !tar.fileExists(src) {
-		return format, []byte(fmt.Sprintf("Failed: database %s missing!", src))
+		return format, []byte(fmt.Sprintf("Database %s missing!", src))
 	} else {
 		fInfo, _ := os.Stat(src)
 		fsize := fInfo.Size()
 		if fsize <= 1 {
-			return format, []byte(fmt.Sprintf("Failed: database %s is empty!", src))
+			return format, []byte(fmt.Sprintf("Database %s is empty!", src))
 		} else {
+			var allRecords []MyStruct
+			var lastLine, start, end = 0, 0, 0
+			line := ""
+
+			if count == 1 {
+				count = 0
+			}
+
 			if tar.CountSize() < count {
 				count = tar.CountSize()
-			} else if count > 1 {
+			} else if count >= 2 {
 				count = count - 1
 			}
+
 			xFields := new(MyStruct)
 			var tmpStruct MyStruct
 
-			if count == 1 {
-				start = tar.CountSize()
-			} else {
-				start = tar.CountSize() - count
-			}
+			start = tar.CountSize() - count
 			end = tar.CountSize()
 
 			file, err := os.Open(src)
@@ -382,12 +384,12 @@ func (tar *Tardigrade) FirstField(f string) string {
 
 	src := DBFile
 	if !tar.fileExists(src) {
-		return fmt.Sprintf("Failed: database %s missing!", src)
+		return fmt.Sprintf("Database %s missing!", src)
 	} else {
 		fInfo, _ := os.Stat(src)
 		fsize := fInfo.Size()
 		if fsize <= 1 {
-			return fmt.Sprintf("Failed: database %s is empty!", src)
+			return fmt.Sprintf("Database %s is empty!", src)
 		} else {
 			lastLine := 0
 			line := ""
@@ -481,18 +483,12 @@ func (tar *Tardigrade) LastField(f string) string {
 	return result
 }
 
-// SelectSearch function takes in a string in a single or multiple words and format type it returns the format [ raw | json | id | key | value ] and []bytes array with result
+// SelectSearch function takes in a single or multiple words(comma,separated) and format type, Returns the format [ raw | json | id | key | value ] and []bytes array with result
+// search will need to match ALL words for it to be true and return result.
 func (tar *Tardigrade) SelectSearch(search, format string) (string, []byte) {
-
-	/*
-		search := "test1,test2,test3,test4,test5,test6"
-		split := strings.Split(search, ",")
-		size := len(split)
-
-		for i := 0; i < size; i++ {
-			fmt.Println(split[i])
-		}
-	*/
+	search = strings.ReplaceAll(search, " ", ",")
+	split := strings.Split(search, ",")
+	size := len(split)
 
 	var allRecord []byte
 
@@ -505,8 +501,6 @@ func (tar *Tardigrade) SelectSearch(search, format string) (string, []byte) {
 		if fsize <= 1 {
 			return format, []byte(fmt.Sprintf("Database %s is empty!", src))
 		} else {
-			//size := strings.Split(search, ",")
-
 			var allRecords []MyStruct
 			xFields := new(MyStruct)
 			var tmpStruct MyStruct
@@ -518,19 +512,29 @@ func (tar *Tardigrade) SelectSearch(search, format string) (string, []byte) {
 			defer file.Close()
 			var r io.Reader = file
 			sc := bufio.NewScanner(r)
+			containsAll := true
 
 			for sc.Scan() {
 				line = sc.Text()
-				//if strings.Contains(line, "Record") && strings.Contains(line, "empty")
-				in := []byte(line)
+				for i := 0; i < size; i++ {
+					for x := 0; x < size; x++ {
+						if !strings.Contains(line, split[x]) {
+							containsAll = false
+						}
+					}
+				}
+				if containsAll {
+					in := []byte(line)
+					err = json.Unmarshal(in, &tmpStruct)
+					CheckError("SelectSearch(2)", err)
 
-				err = json.Unmarshal(in, &tmpStruct)
-				CheckError("SelectSearch(2)", err)
+					xFields.Id = tmpStruct.Id
+					xFields.Key = string(tmpStruct.Key)
+					xFields.Data = string(tmpStruct.Data)
+					allRecords = append(allRecords, *xFields)
+				}
+				containsAll = true
 
-				xFields.Id = tmpStruct.Id
-				xFields.Key = string(tmpStruct.Key)
-				xFields.Data = string(tmpStruct.Data)
-				allRecords = append(allRecords, *xFields)
 			}
 			allRecord, err = json.Marshal(allRecords)
 			CheckError("SelectSearch(3)", err)

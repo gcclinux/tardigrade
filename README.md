@@ -1,6 +1,6 @@
 ## "tardigrade" is small and simple no-SQL database for small apps and easy use.
-*updated:  Tue 21 Feb 22:05:28 GMT 2023*<br>
-*release:  0.1.2*
+*updated:  Sat 25 Feb 16:15:57 GMT 2023*<br>
+*release:  0.1.3*
 
 <br>
 
@@ -18,19 +18,20 @@
 Current structure and available functions()
 
 ```
--createdb               "CREATE new database"
--copydb                 "CREATE backup (copy) of the database"
--deletedb               "DELETE database"
--deletef                "DELETE <id> specific row from database"
--insert                 "INSERT <field one> <field two> for new entry"
--change                 "CHANGE <id> <field one> <field two> on existing row "
--selectf                "SELECT <format> TOP row from database "
--selectl                "SELECT <format> LAST row from database"
--selectfx               "SELECT <number> <format> TOP rows from database"
--selectlx               "SELECT <number> <format> LAST rows from database"
--selecti                "SELECT <id> specific row from database"
--total                  "SHOW number of entries in database"
--version                "SHOW built date & version
+-createdb		"CREATE new database"
+-copydb 		"CREATE backup (copy) of the database"
+-deletedb 		"DELETE database"
+-deletef 		"DELETE <id> specific row from database"
+-search 		"SEARCH <Word(s)> <format> match all words and return results"
+-selectf 		"SELECT <format> TOP row from database "
+-selectl 		"SELECT <format> LAST row from database"
+-selectfx 		"SELECT <number> <format> TOP rows from database"
+-selectlx 		"SELECT <number> <format> LAST rows from database"
+-selecti 		"SELECT <id> specific row from database"
+-insert 		"INSERT <field one> <field two> for new entry"
+-change 		"CHANGE <id> <field one> <field two> on existing row "
+-total 			"SHOW number of entries in database"
+-version		"SHOW built date & version
 ```
 
 
@@ -139,6 +140,15 @@ Example:
 
 ```
 
+**SelectSearch function takes (comma, separated pattern(s)) and format if true returning byte[]**
+> SelectSearch("pattern1,pattern2", "format")
+
+```
+Example: 
+	bin/tardigrade-linux-x86_64 -search "pattern1,pattern2" "json"
+
+```
+
 RELEASE NOTE:
 
 ```
@@ -149,6 +159,7 @@ RELEASE NOTE:
 ** release 0.1.0 - Build the first binary
 ** release 0.1.1 - Fixed some issues
 ** release 0.1.2 - Added version for format to selectfx & selectlx
+** release 0.1.3 - Added search function -search (pattern(s)), format.
 ```
 
 OUTSTANDING:
