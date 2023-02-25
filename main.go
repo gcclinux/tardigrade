@@ -33,26 +33,33 @@ func main() {
 				vr := tar.GetVersion()
 				dt := tar.GetUpdated()
 				fmt.Println(dt, "(", vr, ")")
+				fmt.Println()
 			} else if os.Args[1] == "-copydb" {
 				fmt.Println()
 				msg, status := tar.CreatedDBCopy()
 				fmt.Println(msg, "(", status, ")")
+				fmt.Println()
 			} else if os.Args[1] == "-deletedb" {
 				fmt.Println()
 				msg, status := tar.DeleteDB()
 				fmt.Println(msg, "(", status, ")")
+				fmt.Println()
 			} else if os.Args[1] == "-insert" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -insert \"key filed details\" \"data field details\"")
+				fmt.Println()
 			} else if os.Args[1] == "-selectf" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -selectf \"format\" (raw|json|key|value)")
+				fmt.Println()
 			} else if os.Args[1] == "-selectl" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -selectl \"format\" (raw|json|key|value)")
+				fmt.Println()
 			} else if os.Args[1] == "-selecti" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -selecti \"id\" \"format\" (raw|json|key|value)")
+				fmt.Println()
 			} else if os.Args[1] == "-total" {
 				fmt.Println()
 				msg := tar.CountSize()
@@ -60,18 +67,23 @@ func main() {
 			} else if os.Args[1] == "-selectfx" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -selectfx \"amount\" \"format\" (raw|json|key|value)")
+				fmt.Println()
 			} else if os.Args[1] == "-selectlx" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -selectlx \"amount\" \"format\" (raw|json|key|value)")
+				fmt.Println()
 			} else if os.Args[1] == "-search" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -search \"word(s)\" \"format\" (raw|json|key|value)")
+				fmt.Println()
 			} else if os.Args[1] == "-change" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -change \"id\" \"key data\" \"value date\"")
+				fmt.Println()
 			} else if os.Args[1] == "-deletef" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -deletef \"id\"")
+				fmt.Println()
 			} else if os.Args[1] == "-help" {
 				fmt.Println(`
 -createdb		"CREATE new database"
