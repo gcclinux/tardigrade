@@ -107,38 +107,61 @@ func main() {
 			}
 		} else if size == 3 {
 			if os.Args[1] == "-createdb" {
+				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " -createdb")
+				fmt.Println()
 			} else if os.Args[1] == "-version" {
+				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " -version")
+				fmt.Println()
 			} else if os.Args[1] == "-copydb" {
+				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " -copydb")
+				fmt.Println()
 			} else if os.Args[1] == "-help" {
+				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " -help")
+				fmt.Println()
 			} else if os.Args[1] == "-deletedb" {
+				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " -deletedb")
+				fmt.Println()
 			} else if os.Args[1] == "-insert" {
+				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS:", os.Args[1], "\n\n>> ", filepath.Base(os.Args[0]), " -insert \"key filed details\" \"data field details\"")
+				fmt.Println()
 			} else if os.Args[1] == "-selectf" {
 				fmt.Println()
 				fmt.Println(tar.FirstField(os.Args[2]))
+				fmt.Println()
 			} else if os.Args[1] == "-selectl" {
 				fmt.Println()
 				fmt.Println(tar.LastField(os.Args[2]))
+				fmt.Println()
 			} else if os.Args[1] == "-selecti" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -selecti \"id\" \"format\" (raw|json|key|value)")
+				fmt.Println()
 			} else if os.Args[1] == "-total" {
+				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " -total")
+				fmt.Println()
 			} else if os.Args[1] == "-selectfx" {
+				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -selectfx \"amount\" \"format\" (raw|json|key|value)")
+				fmt.Println()
 			} else if os.Args[1] == "-selectlx" {
+				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -selectlx \"amount\" \"format\" (raw|json|key|value)")
+				fmt.Println()
 			} else if os.Args[1] == "-search" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -search \"word(s)\" \"format\" (raw|json|key|value)")
+				fmt.Println()
 			} else if os.Args[1] == "-change" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " -change \"id\" \"key data\" \"value date\"")
+				fmt.Println()
 			} else if os.Args[1] == "-deletef" {
 				fmt.Println()
 				if x, err := strconv.Atoi(os.Args[2]); err == nil {
@@ -150,35 +173,52 @@ func main() {
 			} else {
 				fmt.Println()
 				fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
+				fmt.Println()
 			}
 		} else if size == 4 {
 			if os.Args[1] == "-createdb" {
+				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -createdb")
+				fmt.Println()
 			} else if os.Args[1] == "-copydb" {
+				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -copydb")
+				fmt.Println()
 			} else if os.Args[1] == "-version" {
+				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -version")
+				fmt.Println()
 			} else if os.Args[1] == "-help" {
+				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -help")
+				fmt.Println()
 			} else if os.Args[1] == "-deletedb" {
+				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -deletedb")
+				fmt.Println()
 			} else if os.Args[1] == "-insert" {
 				fmt.Println()
 				status := tar.AddField(os.Args[2], os.Args[3])
 				fmt.Println("returned: (", status, ")")
+				fmt.Println()
 			} else if os.Args[1] == "-selectf" {
 				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -selectf \"format\" (raw|json|key|value)")
+				fmt.Println()
 			} else if os.Args[1] == "-selectl" {
 				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -selectl \"format\" (raw|json|key|value)")
+				fmt.Println()
 			} else if os.Args[1] == "-selecti" {
 				fmt.Println()
 				id, _ := strconv.Atoi(os.Args[2])
 				format := os.Args[3]
 				fmt.Println(tar.SelectByID(id, format))
+				fmt.Println()
 			} else if os.Args[1] == "-total" {
+				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -total")
+				fmt.Println()
 			} else if os.Args[1] == "-search" {
 				fmt.Println()
 				var format, received = tar.SelectSearch(os.Args[2], os.Args[3])
@@ -282,9 +322,11 @@ func main() {
 			} else if os.Args[1] == "-deletef" {
 				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -deletef \"amount\"")
+				fmt.Println()
 			} else {
 				fmt.Println()
 				fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
+				fmt.Println()
 			}
 		} else if size == 5 {
 			if os.Args[1] == "-change" {
@@ -293,16 +335,19 @@ func main() {
 					change, status := tar.ModifyField(x, os.Args[3], os.Args[4])
 					fmt.Println(change, status)
 				} else {
+					fmt.Println()
 					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> ", filepath.Base(os.Args[0]), " -selectfx \"number\"")
 				}
 				fmt.Println()
 			} else {
 				fmt.Println()
 				fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
+				fmt.Println()
 			}
 		} else if size == 6 {
 			fmt.Println()
 			fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
+			fmt.Println()
 		}
 	}
 }
