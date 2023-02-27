@@ -1,6 +1,6 @@
 package main
 
-// Built Sat 25 Feb 16:15:57 GMT 2023
+// Built Mon 27 Feb 20:15:33 GMT 2023
 
 import (
 	"bufio"
@@ -22,18 +22,39 @@ type MyStruct struct {
 	Data string `json:"data"`
 }
 
-func (tar *Tardigrade) getOS() rune {
+func (tar *Tardigrade) getOS() (string, rune) {
 	PATH_SEPARATOR := '/'
+	BIN_NAME := ""
+
 	if runtime.GOOS == "windows" {
 		PATH_SEPARATOR = '\\'
+		if runtime.GOARCH == "amd64" {
+			BIN_NAME = "tardigrade-win-x86_64.exe"
+		} else {
+			BIN_NAME = "unsupported"
+		}
 	} else if runtime.GOOS == "linux" {
 		PATH_SEPARATOR = '/'
+		if runtime.GOARCH == "amd64" {
+			BIN_NAME = "tardigrade-Linux-x86_64"
+		} else if runtime.GOARCH == "arm64" {
+			BIN_NAME = "tardigrade-Linux-aarch64"
+		} else {
+			BIN_NAME = "unsupported"
+		}
 	} else if runtime.GOOS == "darwin" {
 		PATH_SEPARATOR = '/'
+		if runtime.GOARCH == "arm64" {
+			BIN_NAME = "tardigrade-Darwin-arm64"
+		} else {
+			BIN_NAME = "unsupported"
+		}
 	} else {
-		log.Println("unknown")
+		log.Println("unsupported")
+		BIN_NAME = "unsupported"
+		PATH_SEPARATOR = '/'
 	}
-	return PATH_SEPARATOR
+	return BIN_NAME, PATH_SEPARATOR
 }
 
 // AddField take in (key, sprint) (data, string) and add to tardigrade.db

@@ -18,6 +18,7 @@
 Current structure and available functions()
 
 ```
+-upgrade        "Check for new App version and try to upgrade!"
 -createdb		"CREATE new database"
 -copydb 		"CREATE backup (copy) of the database"
 -deletedb 		"DELETE database"
@@ -148,6 +149,17 @@ Example:
 	bin/tardigrade-linux-x86_64 -search "pattern1,pattern2" "json"
 
 ```
+**RunUpgrade function will check release note for current version and then upgrade if required.**
+> RunUpgrade()
+
+```
+Example: 
+	bin/tardigrade-linux-x86_64 -upgrade
+
+Result:
+	Upgraded tardigrade-linux-x86_64 to latest version (0.1.4) ....
+```
+
 
 RELEASE NOTE:
 
@@ -160,6 +172,7 @@ RELEASE NOTE:
 ** release 0.1.1 - Fixed some issues
 ** release 0.1.2 - Added version for format to selectfx & selectlx
 ** release 0.1.3 - Added search function -search (pattern(s)), format.
+** release 0.1.4 - Added upgrade option for supported systems
 ```
 
 OUTSTANDING:

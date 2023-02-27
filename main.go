@@ -1,6 +1,6 @@
 package main
 
-// Built Sat 25 Feb 16:15:57 GMT 2023
+// Built Mon 27 Feb 20:15:33 GMT 2023
 
 import (
 	"encoding/json"
@@ -86,6 +86,7 @@ func main() {
 				fmt.Println()
 			} else if os.Args[1] == "-help" {
 				fmt.Println(`
+-upgrade		"Check for new App version and try to upgrade!"
 -createdb		"CREATE new database"
 -copydb 		"CREATE backup (copy) of the database"
 -deletedb 		"DELETE database"
@@ -101,6 +102,9 @@ func main() {
 -total 			"SHOW number of entries in database"
 -version		"SHOW built date & version`)
 				fmt.Println()
+			} else if os.Args[1] == "-upgrade" {
+				fmt.Println()
+				tar.RunUpgrade()
 			} else {
 				fmt.Println()
 				fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
@@ -109,6 +113,10 @@ func main() {
 			if os.Args[1] == "-createdb" {
 				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " -createdb")
+				fmt.Println()
+			} else if os.Args[1] == "-upgrade" {
+				fmt.Println()
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " -upgrade")
 				fmt.Println()
 			} else if os.Args[1] == "-version" {
 				fmt.Println()
@@ -179,6 +187,10 @@ func main() {
 			if os.Args[1] == "-createdb" {
 				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -createdb")
+				fmt.Println()
+			} else if os.Args[1] == "-upgrade" {
+				fmt.Println()
+				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " -upgrade")
 				fmt.Println()
 			} else if os.Args[1] == "-copydb" {
 				fmt.Println()
@@ -336,7 +348,7 @@ func main() {
 					fmt.Println(change, status)
 				} else {
 					fmt.Println()
-					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> ", filepath.Base(os.Args[0]), " -selectfx \"number\"")
+					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> ", filepath.Base(os.Args[0]), " -change \"<id>\" \"<field 1>\" \" field 2\"")
 				}
 				fmt.Println()
 			} else {
