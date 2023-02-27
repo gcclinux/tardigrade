@@ -1,6 +1,6 @@
 package main
 
-// Built Mon 27 Feb 20:15:33 GMT 2023
+// Updated: Mon 27 Feb 22:58:49 GMT 2023
 
 import (
 	"bufio"
@@ -22,6 +22,7 @@ type MyStruct struct {
 	Data string `json:"data"`
 }
 
+// getOS function return specific OS PATH_SEPARATOR and Compiled file name unic to this App
 func (tar *Tardigrade) getOS() (string, rune) {
 	PATH_SEPARATOR := '/'
 	BIN_NAME := ""
@@ -57,6 +58,29 @@ func (tar *Tardigrade) getOS() (string, rune) {
 	return BIN_NAME, PATH_SEPARATOR
 }
 
+// MyMarshal function is adapted to SetEscapeHTML to false before encoding
+func MyMarshal(t interface{}) ([]byte, error) {
+	buffer := &bytes.Buffer{}
+	encoder := json.NewEncoder(buffer)
+	encoder.SetEscapeHTML(false)
+	err := encoder.Encode(t)
+	return buffer.Bytes(), err
+}
+
+// MyIndent function is adapted to SetEscapeHTML to false before encoding and indenting
+func MyIndent(v interface{}, prefix, indent string) ([]byte, error) {
+	b, err := MyMarshal(v)
+	if err != nil {
+		return nil, err
+	}
+	var buf bytes.Buffer
+	err = json.Indent(&buf, b, prefix, indent)
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
 // AddField take in (key, sprint) (data, string) and add to tardigrade.db
 func (tar *Tardigrade) AddField(key, data string) bool {
 
@@ -73,13 +97,12 @@ func (tar *Tardigrade) AddField(key, data string) bool {
 	getStruct.Key = key
 	getStruct.Data = data
 
-	response, err := json.Marshal(getStruct)
+	response, err := MyMarshal(getStruct)
 	CheckError("Marshal", err)
 
 	file, err := os.OpenFile(DBFile, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	CheckError("O_APPEND", err)
 	file.Write(response)
-	file.WriteString("\n")
 
 	return true
 }
@@ -170,7 +193,7 @@ func (tar *Tardigrade) SelectByID(id int, f string) string {
 				CheckError("SelectByID(2)", err)
 
 				if f == "json" {
-					out, _ := json.MarshalIndent(&s, "", "  ")
+					out, _ := MyIndent(&s, "", "  ")
 					result = string(out)
 				} else if f == "value" {
 					result = string(s.Data)
@@ -207,7 +230,7 @@ func (tar *Tardigrade) ModifyField(id int, k, v string) (msg string, status bool
 		s.Id = id
 		s.Key = k
 		s.Data = v
-		out, _ := json.Marshal(&s)
+		out, _ := MyMarshal(&s)
 		after := string(out)
 
 		input, err := os.ReadFile(src)
@@ -325,7 +348,7 @@ func (tar *Tardigrade) FirstXFields(count int, format string) (string, []byte) {
 					allRecords = append(allRecords, *xFields)
 				}
 			}
-			allRecord, err = json.Marshal(allRecords)
+			allRecord, err = MyMarshal(allRecords)
 			CheckError("FirstXFields(3)", err)
 		}
 	}
@@ -390,7 +413,7 @@ func (tar *Tardigrade) LastXFields(count int, format string) (string, []byte) {
 					allRecords = append(allRecords, *xFields)
 				}
 			}
-			allRecord, err = json.Marshal(allRecords)
+			allRecord, err = MyMarshal(allRecords)
 			CheckError("LastXFields(3)", err)
 		}
 	}
@@ -433,7 +456,7 @@ func (tar *Tardigrade) FirstField(f string) string {
 			CheckError("FirstField(2)", err)
 
 			if f == "json" {
-				out, _ := json.MarshalIndent(&s, "", "  ")
+				out, _ := MyIndent(&s, "", "  ")
 				result = string(out)
 			} else if f == "value" {
 				result = string(s.Data)
@@ -486,7 +509,7 @@ func (tar *Tardigrade) LastField(f string) string {
 			CheckError("LastField(2)", err)
 
 			if f == "json" {
-				out, _ := json.MarshalIndent(&s, "", "  ")
+				out, _ := MyIndent(&s, "", "  ")
 				result = string(out)
 			} else if f == "value" {
 				result = string(s.Data)
@@ -558,7 +581,7 @@ func (tar *Tardigrade) SelectSearch(search, format string) (string, []byte) {
 				containsAll = true
 
 			}
-			allRecord, err = json.Marshal(allRecords)
+			allRecord, err = MyMarshal(allRecords)
 			CheckError("SelectSearch(3)", err)
 		}
 	}

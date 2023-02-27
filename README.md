@@ -1,6 +1,6 @@
 ## "tardigrade" is small and simple no-SQL database for small apps and easy use.
-*updated:  Sat 25 Feb 16:15:57 GMT 2023*<br>
-*release:  0.1.3*
+*updated:  Mon 27 Feb 22:58:49 GMT 2023*<br>
+*release:  0.1.5*
 
 <br>
 
@@ -173,6 +173,7 @@ RELEASE NOTE:
 ** release 0.1.2 - Added version for format to selectfx & selectlx
 ** release 0.1.3 - Added search function -search (pattern(s)), format.
 ** release 0.1.4 - Added upgrade option for supported systems
+** release 0.1.5 - Bug fix storing string with encoder.SetEscapeHTML(false)
 ```
 
 OUTSTANDING:
