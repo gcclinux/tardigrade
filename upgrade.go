@@ -48,7 +48,7 @@ func (tar *Tardigrade) RunUpgrade() {
 		replaceFile(local, old)
 		replaceFile(file, local)
 
-		msg = fmt.Sprintf("Upgraded %v to latest version (%v) ....", file, remote_version)
+		msg = fmt.Sprintf("Upgraded %v (%v) to latest version (%v) ....", file,tar.GetVersion(), remote_version)
 	}
 
 	fmt.Println(msg)

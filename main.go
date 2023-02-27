@@ -86,7 +86,7 @@ func main() {
 				fmt.Println()
 			} else if os.Args[1] == "-help" {
 				fmt.Println(`
--upgrade		"Check for new App version and try to upgrade!"
+-upgrade		"Check for new version and upgrade Application!"
 -createdb		"CREATE new database"
 -copydb 		"CREATE backup (copy) of the database"
 -deletedb 		"DELETE database"
@@ -105,6 +105,7 @@ func main() {
 			} else if os.Args[1] == "-upgrade" {
 				fmt.Println()
 				tar.RunUpgrade()
+				fmt.Println()
 			} else {
 				fmt.Println()
 				fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
