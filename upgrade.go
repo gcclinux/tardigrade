@@ -1,6 +1,6 @@
 package main
 
-// Updated Fri 03 Mar 12:15:49 GMT 2023
+// Updated Fri  3 Mar 20:53:48 GMT 2023
 
 import (
 	"fmt"
@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/gcclinux/tardigrade-mod"
@@ -19,7 +20,8 @@ import (
 func RunUpgrade() {
 
 	tar := tardigrade.Tardigrade{}
-	file, path := tar.GetOS()
+	path := tar.GetOS()
+	file := getFile()
 	remote_version := ""
 
 	local_int := strings.Replace(AppGetVersion(), ".", "", -1)
@@ -35,9 +37,8 @@ func RunUpgrade() {
 		replaceFile(file, local)
 
 		msg = fmt.Sprintf("Upgraded %v (%v) to latest version (%v) ....", file, AppGetVersion(), remote_version)
-	} else {
-		fmt.Println(msg)
 	}
+	fmt.Println(msg)
 }
 
 func replaceFile(file string, local string) {
@@ -74,4 +75,20 @@ func downloadFile(filepath string, url string) (err error) {
 		return err
 	}
 	return nil
+}
+
+func getFile() string {
+	FILE_NAME := ""
+	if runtime.GOOS == "windows" && runtime.GOARCH == "amd64" {
+		FILE_NAME = "tardigrade-win-x86_64.exe"
+	} else if runtime.GOOS == "linux" && runtime.GOARCH == "amd64" {
+		FILE_NAME = "tardigrade-Linux-x86_64"
+	} else if runtime.GOOS == "linux" && runtime.GOARCH == "arm64" {
+		FILE_NAME = "tardigrade-Linux-aarch64"
+	} else if runtime.GOOS == "darwin" && runtime.GOARCH == "arm64" {
+		FILE_NAME = "tardigrade-Darwin-arm64"
+	} else {
+		log.Println("unknown")
+	}
+	return FILE_NAME
 }

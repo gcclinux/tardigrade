@@ -1,6 +1,6 @@
 ## "tardigrade" is small and simple no-SQL database for small apps and easy use.
-*updated:  Fri 03 Mar 12:15:49 GMT 2023*<br>
-*release:  1.0.0*
+*updated:  Fri 03 Mar 20:48:44 GMT 2023*<br>
+*release:  1.0.1*
 
 <br>
 
@@ -176,6 +176,7 @@ RELEASE NOTE:
 ** release 0.1.4 - Added upgrade option for supported systems
 ** release 0.1.5 - Bug fix storing string with encoder.SetEscapeHTML(false)
 ** release 1.0.0 - Initial major release CLI interface
+** release 1.0.1 - Bug fix for file arch upgrade
 ```
 
 OUTSTANDING:
