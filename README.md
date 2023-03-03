@@ -1,6 +1,6 @@
 ## "tardigrade" is small and simple no-SQL database for small apps and easy use.
-*updated:  Mon 27 Feb 22:58:49 GMT 2023*<br>
-*release:  0.1.5*
+*updated:  Fri 03 Mar 12:15:49 GMT 2023*<br>
+*release:  1.0.0*
 
 <br>
 
@@ -18,21 +18,22 @@
 Current structure and available functions()
 
 ```
--upgrade        "Check for new App version and try to upgrade!"
--createdb		"CREATE new database"
--copydb 		"CREATE backup (copy) of the database"
--deletedb 		"DELETE database"
--deletef 		"DELETE <id> specific row from database"
--search 		"SEARCH <Word(s)> <format> match all words and return results"
--selectf 		"SELECT <format> TOP row from database "
--selectl 		"SELECT <format> LAST row from database"
--selectfx 		"SELECT <number> <format> TOP rows from database"
--selectlx 		"SELECT <number> <format> LAST rows from database"
--selecti 		"SELECT <id> specific row from database"
--insert 		"INSERT <field one> <field two> for new entry"
--change 		"CHANGE <id> <field one> <field two> on existing row "
--total 			"SHOW number of entries in database"
--version		"SHOW built date & version
+--upgrade               "Check for newer version and upgrade the compiled application!"
+--createdb              "CREATE new database"
+--copydb                "CREATE backup (copy) of the database"
+--deletedb              "DELETE database"
+--deletef               "DELETE <id> specific row from database"
+--search                "SEARCH <Word(s)> <format> match all words and return results"
+--selectf               "SELECT <format> TOP row from database "
+--selectl               "SELECT <format> LAST row from database"
+--selectfx              "SELECT <number> <format> TOP rows from database"
+--selectlx              "SELECT <number> <format> LAST rows from database"
+--selecti               "SELECT <id> <format> return specific row from database"
+--insert                "INSERT <field one> <field two> for new entry"
+--change                "CHANGE <id> <field one> <field two> on existing row "
+--total                 "SHOW number of entries in database"
+--version               "SHOW local (App) & (Mod) build version & date
+
 ```
 
 
@@ -44,7 +45,7 @@ Current structure and available functions()
 >function: CreateDB()
 ```
 Example:
-	bin/tardigrade-linux-x86_64 -createdb
+	bin/tardigrade-linux-x86_64 --createdb
 
 ```
 
@@ -52,7 +53,7 @@ Example:
 >function: DeleteDB()
 ```
 Example:
-	bin/tardigrade-linux-x86_64 -deletedb
+	bin/tardigrade-linux-x86_64 --deletedb
 
 ```
 **CreatedDBCopy creates a copy of the Database and store in UserHomeDir()**
@@ -60,7 +61,7 @@ Example:
 
 ```
 Example:
-	bin/tardigrade-linux-x86_64 -copydb
+	bin/tardigrade-linux-x86_64 --copydb
 
 ```
 
@@ -70,7 +71,7 @@ Example:
 
 ```
 Example: 
-	bin/tardigrade-linux-x86_64 -insert "key free text" "value free text string"
+	bin/tardigrade-linux-x86_64 --insert "key free text" "value free text string"
 ```
 
 **CountSize() function will return number of rows in the database**
@@ -79,7 +80,7 @@ Example:
 
 ````
 Example:
-	bin/tardigrade-linux-x86_64 -total 
+	bin/tardigrade-linux-x86_64 --total 
 ````
 
 **FirstField func returns the first entry of gojsondb.db in all formats \[ raw | json | id | key | value ] specify format required**
@@ -88,7 +89,7 @@ Example:
 
 ```
 Example:
-	bin/tardigrade-linux-x86_64 -selectf 
+	bin/tardigrade-linux-x86_64 --selectf 
 ```
 
 **LastField() func takes an id and returns the last entry in multi-format \[ raw | json | id | key | value ]**
@@ -97,7 +98,7 @@ Example:
 
 ```
 Example:
-	bin/tardigrade-linux-x86_64 -selectl
+	bin/tardigrade-linux-x86_64 --selectl
 ```
 
 **SelectByID func take an id and format and returns an entry string for a specific id in all formats \[ raw | json | id | key | value ]**
@@ -105,7 +106,7 @@ Example:
 
 ```
 Example:
-	bin/tardigrade-linux-x86_64 -selecti "id" "format"
+	bin/tardigrade-linux-x86_64 --selecti "id" "format"
 ```
 
 **FirstXFields returns last X number of entries from db in byte[] format**
@@ -113,7 +114,7 @@ Example:
 
 ```
 Example:
-	bin/tardigrade-linux-x86_64 -selectfx "id" "format"
+	bin/tardigrade-linux-x86_64 --selectfx "id" "format"
 ```
 
 **LastXFields returns last X number of entries from db in values byte[] format**
@@ -121,7 +122,7 @@ Example:
 
 ```
 Example:
-	bin/tardigrade-linux-x86_64 -selectlx "id" "format"
+	bin/tardigrade-linux-x86_64 --selectlx "id" "format"
 ```
 
 **RemoveField function takes an unique field id as an input and remove the matching field entry**
@@ -129,7 +130,7 @@ Example:
 
 ```
 Example:
-	bin/tardigrade-linux-x86_64 -deletef "id"
+	bin/tardigrade-linux-x86_64 --deletef "id"
 ```
 
 **ModifyField function takes ID, Key, Value and update row = ID with new information provided**
@@ -137,7 +138,7 @@ Example:
 
 ```
 Example: 
-	bin/tardigrade-linux-x86_64 -change "id" "new key free text" "new value free text string"
+	bin/tardigrade-linux-x86_64 --change "id" "new key free text" "new value free text string"
 
 ```
 
@@ -146,7 +147,7 @@ Example:
 
 ```
 Example: 
-	bin/tardigrade-linux-x86_64 -search "pattern1,pattern2" "json"
+	bin/tardigrade-linux-x86_64 --search "pattern1,pattern2" "json"
 
 ```
 **RunUpgrade function will check release note for current version and then upgrade if required.**
@@ -154,10 +155,10 @@ Example:
 
 ```
 Example: 
-	bin/tardigrade-linux-x86_64 -upgrade
+	bin/tardigrade-linux-x86_64 --upgrade
 
 Result:
-	Upgraded tardigrade-linux-x86_64 to latest version (0.1.4) ....
+	Upgraded tardigrade-linux-x86_64 to latest version (1.0.0) ....
 ```
 
 
@@ -174,9 +175,10 @@ RELEASE NOTE:
 ** release 0.1.3 - Added search function -search (pattern(s)), format.
 ** release 0.1.4 - Added upgrade option for supported systems
 ** release 0.1.5 - Bug fix storing string with encoder.SetEscapeHTML(false)
+** release 1.0.0 - Initial major release CLI interface
 ```
 
 OUTSTANDING:
 ```
-** Write and share some test functions
+** Create a WEB UI integrations
 ```
