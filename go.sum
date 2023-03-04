@@ -1,2 +1,4 @@
 github.com/gcclinux/tardigrade-mod v0.0.0-20230303102945-7ed28ed45e00 h1:OL8vUhElbpriDm5HQuuextMNDQ0pVeVB5wJSlOHNLVg=
 github.com/gcclinux/tardigrade-mod v0.0.0-20230303102945-7ed28ed45e00/go.mod h1:WF0bUNrB50JI8doLtIgElrjG5YWho8mAXX5+T+tLpfc=
+github.com/gcclinux/tardigrade-mod v0.2.1 h1:kLCVPIjnZCnyjWrQes/Qn/sJdfmie4IngDLASMbMbP8=
+github.com/gcclinux/tardigrade-mod v0.2.1/go.mod h1:WF0bUNrB50JI8doLtIgElrjG5YWho8mAXX5+T+tLpfc=
