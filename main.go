@@ -33,9 +33,9 @@ func main() {
 		if size == 2 {
 			// CreateDB() function
 			if os.Args[1] == "--createdb" {
-				msg, status := tar.CreateDB()
 				fmt.Println()
-				fmt.Println(msg, "(", status, ")")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --createdb \"db_name.db\"")
+				fmt.Println()
 			} else if os.Args[1] == "--version" {
 				fmt.Println()
 				vr := AppGetVersion()
@@ -47,53 +47,51 @@ func main() {
 				fmt.Println()
 			} else if os.Args[1] == "--copydb" {
 				fmt.Println()
-				msg, status := tar.CreatedDBCopy()
-				fmt.Println(msg, "(", status, ")")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --copydb \"db_name.db\"")
 				fmt.Println()
 			} else if os.Args[1] == "--deletedb" {
 				fmt.Println()
-				msg, status := tar.DeleteDB()
-				fmt.Println(msg, "(", status, ")")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --deletedb \"db_name.db\"")
 				fmt.Println()
 			} else if os.Args[1] == "--insert" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --insert \"key filed details\" \"data field details\"")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --insert \"key filed details\" \"data field details\" \"db_name\"")
 				fmt.Println()
 			} else if os.Args[1] == "--selectf" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --selectf \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --selectf \"format\" (raw|json|key|value) \"db_name\"")
 				fmt.Println()
 			} else if os.Args[1] == "--selectl" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --selectl \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --selectl \"format\" (raw|json|key|value) \"db_name\"")
 				fmt.Println()
 			} else if os.Args[1] == "--selecti" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --selecti \"id\" \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --selecti \"id\" \"format\" (raw|json|key|value) \"db_name\"")
 				fmt.Println()
 			} else if os.Args[1] == "--total" {
 				fmt.Println()
-				msg := tar.CountSize()
-				fmt.Println("(", msg, ")")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --total \"db_name.db\"")
+				fmt.Println()
 			} else if os.Args[1] == "-selectfx" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --selectfx \"amount\" \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --selectfx \"amount\" \"format\" (raw|json|key|value) \"db_name\"")
 				fmt.Println()
 			} else if os.Args[1] == "--selectlx" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --selectlx \"amount\" \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --selectlx \"amount\" \"format\" (raw|json|key|value) \"db_name\"")
 				fmt.Println()
 			} else if os.Args[1] == "--search" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --search \"word(s)\" \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --search \"word(s)\" \"format\" (raw|json|key|value) \"db_name\"")
 				fmt.Println()
 			} else if os.Args[1] == "--change" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --change \"id\" \"key data\" \"value date\"")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --change \"id\" \"key data\" \"value date\" \"db_name\"")
 				fmt.Println()
 			} else if os.Args[1] == "--deletef" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --deletef \"id\"")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --deletef \"id\" \"db_name\"")
 				fmt.Println()
 			} else if os.Args[1] == "--help" {
 				fmt.Println(`
@@ -123,9 +121,9 @@ func main() {
 			}
 		} else if size == 3 {
 			if os.Args[1] == "--createdb" {
+				msg, status := tar.CreateDB(os.Args[2])
 				fmt.Println()
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " --createdb")
-				fmt.Println()
+				fmt.Println(msg, "(", status, ")")
 			} else if os.Args[1] == "--upgrade" {
 				fmt.Println()
 				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " --upgrade")
@@ -136,7 +134,8 @@ func main() {
 				fmt.Println()
 			} else if os.Args[1] == "--copydb" {
 				fmt.Println()
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " --copydb")
+				msg, status := tar.CreatedDBCopy(os.Args[2])
+				fmt.Println(msg, "(", status, ")")
 				fmt.Println()
 			} else if os.Args[1] == "--help" {
 				fmt.Println()
@@ -144,52 +143,48 @@ func main() {
 				fmt.Println()
 			} else if os.Args[1] == "--deletedb" {
 				fmt.Println()
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " --deletedb")
-				fmt.Println()
+				msg, status := tar.DeleteDB(os.Args[2])
+				fmt.Println(msg, "(", status, ")")
 			} else if os.Args[1] == "--insert" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS:", os.Args[1], "\n\n>> ", filepath.Base(os.Args[0]), " --insert \"key filed details\" \"data field details\"")
 				fmt.Println()
 			} else if os.Args[1] == "--selectf" {
 				fmt.Println()
-				fmt.Println(tar.FirstField(os.Args[2]))
+				fmt.Println(tar.FirstField(os.Args[2], os.Args[3]))
 				fmt.Println()
 			} else if os.Args[1] == "--selectl" {
 				fmt.Println()
-				fmt.Println(tar.LastField(os.Args[2]))
+				fmt.Println(tar.LastField(os.Args[2], os.Args[3]))
 				fmt.Println()
 			} else if os.Args[1] == "--selecti" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --selecti \"id\" \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --selecti \"id\" \"format\" (raw|json|key|value) \"db_name\"")
 				fmt.Println()
 			} else if os.Args[1] == "--total" {
 				fmt.Println()
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "\n\n>> ", filepath.Base(os.Args[0]), " --total")
-				fmt.Println()
+				msg := tar.CountSize(os.Args[2])
+				fmt.Println("(", msg, ")")
 			} else if os.Args[1] == "--selectfx" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --selectfx \"amount\" \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --selectfx \"amount\" \"format\" (raw|json|key|value) \"db_name\"")
 				fmt.Println()
 			} else if os.Args[1] == "--selectlx" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --selectlx \"amount\" \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --selectlx \"amount\" \"format\" (raw|json|key|value) \"db_name\"")
 				fmt.Println()
 			} else if os.Args[1] == "--search" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --search \"word(s)\" \"format\" (raw|json|key|value)")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --search \"word(s)\" \"format\" (raw|json|key|value) \"db_name\"")
 				fmt.Println()
 			} else if os.Args[1] == "--change" {
 				fmt.Println()
-				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --change \"id\" \"key data\" \"value date\"")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --change \"id\" \"key data\" \"value date\" \"db_name\"")
 				fmt.Println()
 			} else if os.Args[1] == "--deletef" {
 				fmt.Println()
-				if x, err := strconv.Atoi(os.Args[2]); err == nil {
-					msg, status := tar.RemoveField(x)
-					fmt.Println(msg, status)
-				} else {
-					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> ", filepath.Base(os.Args[0]), " --deletef \"number\"")
-				}
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --deletef \"number\" \"db_name\"")
+				fmt.Println()
 			} else {
 				fmt.Println()
 				fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
@@ -222,8 +217,7 @@ func main() {
 				fmt.Println()
 			} else if os.Args[1] == "--insert" {
 				fmt.Println()
-				status := tar.AddField(os.Args[2], os.Args[3])
-				fmt.Println("returned: (", status, ")")
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --insert \"key filed details\" \"data field details\" \"db_name\"")
 				fmt.Println()
 			} else if os.Args[1] == "--selectf" {
 				fmt.Println()
@@ -237,7 +231,7 @@ func main() {
 				fmt.Println()
 				id, _ := strconv.Atoi(os.Args[2])
 				format := os.Args[3]
-				fmt.Println(tar.SelectByID(id, format))
+				fmt.Println(tar.SelectByID(id, format, os.Args[4]))
 				fmt.Println()
 			} else if os.Args[1] == "--total" {
 				fmt.Println()
@@ -245,7 +239,7 @@ func main() {
 				fmt.Println()
 			} else if os.Args[1] == "--search" {
 				fmt.Println()
-				var format, received = tar.SelectSearch(os.Args[2], os.Args[3])
+				var format, received = tar.SelectSearch(os.Args[2], os.Args[3], os.Args[4])
 				bytes := received
 				var data []MyStruct
 				json.Unmarshal(bytes, &data)
@@ -278,7 +272,7 @@ func main() {
 				format := os.Args[3]
 				if x, err := strconv.Atoi(os.Args[2]); err == nil {
 					fmt.Println()
-					var format, received = tar.FirstXFields(x, format)
+					var format, received = tar.FirstXFields(x, format, os.Args[4])
 					bytes := received
 					var data []MyStruct
 					json.Unmarshal(bytes, &data)
@@ -312,7 +306,7 @@ func main() {
 				format := os.Args[3]
 				if x, err := strconv.Atoi(os.Args[2]); err == nil {
 					fmt.Println()
-					var format, received = tar.LastXFields(x, format)
+					var format, received = tar.LastXFields(x, format, os.Args[4])
 
 					bytes := received
 					var data []MyStruct
@@ -345,8 +339,12 @@ func main() {
 				}
 			} else if os.Args[1] == "--deletef" {
 				fmt.Println()
-				fmt.Println("ERROR - REMOVE:", os.Args[2], "AND", os.Args[3], "\n\n>> ", filepath.Base(os.Args[0]), " --deletef \"amount\"")
-				fmt.Println()
+				if x, err := strconv.Atoi(os.Args[2]); err == nil {
+					msg, status := tar.RemoveField(x, os.Args[3])
+					fmt.Println(msg, status)
+				} else {
+					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> ", filepath.Base(os.Args[0]), " --deletef \"number\" \"db_name\"")
+				}
 			} else {
 				fmt.Println()
 				fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
@@ -356,12 +354,17 @@ func main() {
 			if os.Args[1] == "--change" {
 				fmt.Println()
 				if x, err := strconv.Atoi(os.Args[2]); err == nil {
-					change, status := tar.ModifyField(x, os.Args[3], os.Args[4])
+					change, status := tar.ModifyField(x, os.Args[3], os.Args[4], os.Args[5])
 					fmt.Println(change, status)
 				} else {
 					fmt.Println()
 					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> ", filepath.Base(os.Args[0]), " --change \"<id>\" \"<field 1>\" \" field 2\"")
 				}
+				fmt.Println()
+			} else if os.Args[1] == "--insert" {
+				fmt.Println()
+				status := tar.AddField(os.Args[2], os.Args[3], os.Args[4])
+				fmt.Println("returned: (", status, ")")
 				fmt.Println()
 			} else {
 				fmt.Println()
