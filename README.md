@@ -10,9 +10,6 @@
 ## Getting started with module in GO
 >go get [github.com/gcclinux/tardigrade-mod](https://github.com/gcclinux/tardigrade-mod)
 
-## Getting started with ready compiled binary / standalone executable
-> Download: [https://github.com/gcclinux/tardigrade/tree/main/bin](https://github.com/gcclinux/tardigrade/tree/main/bin)
-
 <BR>
 
 Current structure and available functions()
