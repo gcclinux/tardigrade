@@ -466,7 +466,7 @@ Flexible Fields (New in v0.3.0):
 		} else if size >= 6 {
 			if os.Args[1] == "--insertflexv" {
 				fmt.Println()
-				if len(os.Args) >= 4 && (len(os.Args)-3)%2 == 0 {
+				if len(os.Args) >= 4 && (len(os.Args)-4)%2 == 0 {
 					status := tar.AddFlexFieldVariadic(os.Args[2], os.Args[3], os.Args[4:]...)
 					fmt.Println("returned: (", status, ")")
 				} else {
