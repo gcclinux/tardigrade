@@ -11,3 +11,5 @@ func CheckError(msg string, err error) {
 		panic(err)
 	}
 }
+
+// Unchanged from original version

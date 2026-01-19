@@ -19,6 +19,12 @@ type MyStruct struct {
 	Data string
 }
 
+type FlexStruct struct {
+	Id     int               `json:"id"`
+	Key    string            `json:"key"`
+	Fields map[string]string `json:"fields"`
+}
+
 // Starting to create an example how to parse external arguments or flags:
 // Build a binary before using it: $ go build -o tardigrade *.go && ./tardigrade -createdb
 func main() {
@@ -93,6 +99,30 @@ func main() {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --deletef \"id\" \"db_name\"")
 				fmt.Println()
+			} else if os.Args[1] == "--listfields" {
+				fmt.Println()
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --listfields \"id\" \"db_name\"")
+				fmt.Println()
+			} else if os.Args[1] == "--getfield" {
+				fmt.Println()
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --getfield \"id\" \"field_name\" \"db_name\"")
+				fmt.Println()
+			} else if os.Args[1] == "--selectflexi" {
+				fmt.Println()
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --selectflexi \"id\" \"format\" \"db_name\"")
+				fmt.Println()
+			} else if os.Args[1] == "--searchflex" {
+				fmt.Println()
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --searchflex \"pattern\" \"format\" \"db_name\"")
+				fmt.Println()
+			} else if os.Args[1] == "--insertflexv" {
+				fmt.Println()
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --insertflexv \"key\" \"db_name\" \"field1\" \"value1\" ...")
+				fmt.Println()
+			} else if os.Args[1] == "--changeflex" {
+				fmt.Println()
+				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --changeflex \"id\" \"key\" '{\"field\":\"value\"}' \"db_name\"")
+				fmt.Println()
 			} else if os.Args[1] == "--help" {
 				fmt.Println(`
 --upgrade		"Check for newer version and upgrade the compiled application!"
@@ -109,7 +139,15 @@ func main() {
 --insert 		"INSERT <field one> <field two> for new entry"
 --change 		"CHANGE <id> <field one> <field two> on existing row "
 --total 		"SHOW number of entries in database"
---version		"SHOW local (App) & (Mod) build version & date`)
+--version		"SHOW local (App) & (Mod) build version & date"
+
+Flexible Fields (New in v0.3.0):
+--insertflexv		"INSERT flexible record with variadic args"
+--selectflexi		"SELECT flexible record by <id> <format> <db>"
+--searchflex		"SEARCH flexible records <pattern> <format> <db>"
+--getfield		"GET specific field value <id> <field> <db>"
+--listfields		"LIST all field names in record <id> <db>"
+--changeflex		"CHANGE flexible record (JSON format)"`)
 				fmt.Println()
 			} else if os.Args[1] == "--upgrade" {
 				fmt.Println()
@@ -184,6 +222,12 @@ func main() {
 			} else if os.Args[1] == "--deletef" {
 				fmt.Println()
 				fmt.Println("ERROR - MISSING ARGUMENTS: \n\n>> ", filepath.Base(os.Args[0]), " --deletef \"number\" \"db_name\"")
+				fmt.Println()
+			} else if os.Args[1] == "--listfields" {
+				fmt.Println()
+				id, _ := strconv.Atoi(os.Args[2])
+				fields := tar.ListFlexFields(id, os.Args[3])
+				fmt.Println(fields)
 				fmt.Println()
 			} else {
 				fmt.Println()
@@ -345,6 +389,43 @@ func main() {
 				} else {
 					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!\n\n>> ", filepath.Base(os.Args[0]), " --deletef \"number\" \"db_name\"")
 				}
+			} else if os.Args[1] == "--getfield" {
+				fmt.Println()
+				id, _ := strconv.Atoi(os.Args[2])
+				value := tar.GetFlexField(id, os.Args[3], os.Args[4])
+				fmt.Println(value)
+				fmt.Println()
+			} else if os.Args[1] == "--selectflexi" {
+				fmt.Println()
+				id, _ := strconv.Atoi(os.Args[2])
+				result := tar.SelectFlexByID(id, os.Args[3], os.Args[4])
+				fmt.Println(result)
+				fmt.Println()
+			} else if os.Args[1] == "--searchflex" {
+				fmt.Println()
+				format, results := tar.SelectFlexSearch(os.Args[2], os.Args[3], os.Args[4])
+				var data []FlexStruct
+				json.Unmarshal(results, &data)
+				if (strings.Contains(string(results), "Database") && strings.Contains(string(results), "missing")) || (strings.Contains(string(results), "Database") && strings.Contains(string(results), "empty")) {
+					fmt.Println(string(results))
+					fmt.Println()
+				}
+				for _, record := range data {
+					if format == "json" {
+						out, _ := json.MarshalIndent(&record, "", "  ")
+						fmt.Println(string(out))
+					} else if format == "raw" {
+						fmt.Printf("id: %d, key: %v, fields: %v\n", record.Id, record.Key, record.Fields)
+					} else if format == "key" {
+						fmt.Println(record.Key)
+					} else if format == "id" {
+						fmt.Println(record.Id)
+					} else if format == "fields" {
+						out, _ := json.Marshal(record.Fields)
+						fmt.Println(string(out))
+					}
+				}
+				fmt.Println()
 			} else {
 				fmt.Println()
 				fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
@@ -366,15 +447,37 @@ func main() {
 				status := tar.AddField(os.Args[2], os.Args[3], os.Args[4])
 				fmt.Println("returned: (", status, ")")
 				fmt.Println()
+			} else if os.Args[1] == "--changeflex" {
+				fmt.Println()
+				if x, err := strconv.Atoi(os.Args[2]); err == nil {
+					var fields map[string]string
+					json.Unmarshal([]byte(os.Args[4]), &fields)
+					msg, status := tar.ModifyFlexField(x, os.Args[3], fields, os.Args[5])
+					fmt.Println(msg, status)
+				} else {
+					fmt.Println("ERROR - FLAG:(", os.Args[2], ") is not a number!")
+				}
+				fmt.Println()
 			} else {
 				fmt.Println()
 				fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
 				fmt.Println()
 			}
-		} else if size == 6 {
-			fmt.Println()
-			fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
-			fmt.Println()
+		} else if size >= 6 {
+			if os.Args[1] == "--insertflexv" {
+				fmt.Println()
+				if len(os.Args) >= 4 && (len(os.Args)-3)%2 == 0 {
+					status := tar.AddFlexFieldVariadic(os.Args[2], os.Args[3], os.Args[4:]...)
+					fmt.Println("returned: (", status, ")")
+				} else {
+					fmt.Println("ERROR - Field/value pairs must be even!")
+				}
+				fmt.Println()
+			} else {
+				fmt.Println()
+				fmt.Println("ERROR - INVALID SYNTAX PROVIDED CHECK MANUAL")
+				fmt.Println()
+			}
 		}
 	}
 }
